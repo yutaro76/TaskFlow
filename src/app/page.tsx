@@ -13,7 +13,7 @@ export default function Home() {
       <Button variant='secondary'>secondary</Button>
       <Button variant='ghost'>phost</Button>
       <Button variant='muted'>muted</Button>
-      <Button variant='teritary'>teritary</Button>
+      <Button variant='tertiary'>tertiary</Button>
     </>
   );
 }
