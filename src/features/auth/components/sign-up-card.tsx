@@ -21,29 +21,39 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema } from '../schemas';
+import { useRegister } from '../api/use-register';
+
+// ↓auth/schemas.tsにバリデーション部分を書き出しregisterSchemaとしたため、こちらはコメントアウト
 // zodのスキーマを定義
-const formSchema = z.object({
-  name: z.string().trim().min(1, 'Required'),
-  email: z.string().email(),
-  password: z.string().min(8, 'Minimum 8 characters required'),
-});
+// const formSchema = z.object({
+//   name: z.string().trim().min(1, 'Required'),
+//   email: z.string().email(),
+//   password: z.string().min(8, 'Minimum 8 characters required'),
+// });
 
 export const SignUpCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.infer<typeof registerSchema>>({
+    // registerSchemaに変更。
     // formSchemaでバリデーションを行う。
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: '',
       email: '',
       password: '',
     },
   });
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+
+  const { mutate } = useRegister();
+  // valuesにはformで得られたname, email, passwordの値が入る。
+  // その値がカスタムフック→エンドポイントの順に渡されDBに保存される。
+  // z.inferは型を推論するのに使われる。
+  const onSubmit = (values: z.infer<typeof registerSchema>) => {
+    mutate({ json: values });
   };
   return (
     <Card className='w-full h-full md:w-[487px] border-none shadow-none'>
-      <CardHeader className='flex items-centerjustify-center text-center p-7'>
+      <CardHeader className='flex items-center justify-center text-center p-7'>
         <CardTitle className='text-2xl mb-2'>Sign Up</CardTitle>
         <CardDescription>
           {/* {' '}は意図的にスペースを入れる */}

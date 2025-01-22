@@ -15,27 +15,32 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema } from '../schemas';
+import { useLogin } from '../api/use-login';
+
+// ↓auth/schemas.tsにバリデーション部分を書き出しloginSchemaとしたため、こちらはコメントアウト
 // zodのスキーマを定義
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8, 'Minimum 8 characters required'),
-});
+// const formSchema = z.object({
+//   email: z.string().email(),
+//   password: z.string().min(8, 'Minimum 8 characters required'),
+// });
 
 export const SignInCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    // formSchemaでバリデーションを行う。
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    // loginSchemaに変更。
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const { mutate } = useLogin();
+  const onSubmit = (values: z.infer<typeof loginSchema>) => {
+    mutate({ json: values });
   };
   return (
     <Card className='w-full h-full md:w-[487px] border-none shadow-none'>
-      <CardHeader className='flex items-centerjustify-center text-center p-6'>
+      <CardHeader className='flex items-center justify-center text-center p-6'>
         <CardTitle className='text-2xl'>Sign In</CardTitle>
       </CardHeader>
       <div className='px-7 mb-2'>
