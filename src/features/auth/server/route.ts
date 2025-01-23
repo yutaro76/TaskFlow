@@ -5,8 +5,13 @@ import { createAdminClient } from '@/lib/appwrite';
 import { ID } from 'node-appwrite';
 import { deleteCookie, setCookie } from 'hono/cookie';
 import { AUTH_COOKIE } from '../constants';
+import { sessionMiddleware } from '@/lib/session-middleware';
 
 const app = new Hono()
+  .get('/current', sessionMiddleware, (c) => {
+    const user = c.get('user');
+    return c.json({ data: user });
+  })
   .post(
     '/login',
     zValidator('json', loginSchema),
@@ -56,8 +61,14 @@ const app = new Hono()
 
     return c.json({ email, password });
   })
-  .post('/logout', (c) => {
+  .post('/logout', sessionMiddleware, async (c) => {
+    // account は、Appwrite のアカウント管理機能にアクセスするためのインスタンス。
+    const account = c.get('account');
+    // AUTH_COOKIE という名前のクッキーを削除
     deleteCookie(c, AUTH_COOKIE);
+    // 現在のユーザーセッションを削除
+    // サーバー側でログアウト処理
+    await account.deleteSession('current');
     return c.json({ success: true });
   });
 
