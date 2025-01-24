@@ -1,7 +1,6 @@
 // @をつければ、srcディレクトリから始まる相対パスでimportできる
 import { getCurrent } from '@/features/auth/actions';
 import { redirect } from 'next/navigation';
-import { UserButton } from '@/features/auth/components/user-button';
 
 export default async function Home() {
   const user = await getCurrent();
@@ -24,7 +23,7 @@ export default async function Home() {
   }
   return (
     <div>
-      <UserButton />
+      This is the home page.
       {/* only visible to authenticated users
       <Button
         onClick={() => {
