@@ -17,5 +17,6 @@ export const useCurrent = () => {
       return data;
     },
   });
+  // queryはuseQueryで取得したデータを返し、queryKeyも返す。
   return query;
 };

@@ -1,11 +1,15 @@
 import { client } from '@/lib/rpc';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { InferRequestType, InferResponseType } from 'hono';
+import { useRouter } from 'next/navigation';
 
 type ResponseType = InferResponseType<(typeof client.api.auth.login)['$post']>;
 type RequestType = InferRequestType<(typeof client.api.auth.login)['$post']>;
 
 export const useLogin = () => {
+  const queryClient = useQueryClient();
+  // ページ遷移に使う
+  const router = useRouter();
   // useMutation<ResponseType, Error, RequestType>は非同期操作を管理するための Reactフック。
   const mutation = useMutation<ResponseType, Error, RequestType>({
     // mutationFnはuseMutationと一緒に使われる。
@@ -19,6 +23,10 @@ export const useLogin = () => {
     mutationFn: async ({ json }) => {
       const response = await client.api.auth.login['$post']({ json });
       return await response.json();
+    },
+    onSuccess: () => {
+      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ['current'] });
     },
   });
   return mutation;

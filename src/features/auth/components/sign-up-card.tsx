@@ -1,3 +1,5 @@
+'use client';
+
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 import { DottedSeparator } from '@/components/dotted-separator';
@@ -44,7 +46,7 @@ export const SignUpCard = () => {
     },
   });
 
-  const { mutate } = useRegister();
+  const { mutate, isPending } = useRegister();
   // valuesにはformで得られたname, email, passwordの値が入る。
   // その値がカスタムフック→エンドポイントの順に渡されDBに保存される。
   // z.inferは型を推論するのに使われる。
@@ -123,8 +125,9 @@ export const SignUpCard = () => {
               )}
             />
             {/* disabled={false}で常に押せる状態になっている。 */}
-            <Button disabled={false} size='lg' className='w-full'>
-              Login
+            {/* isPendingでクリック後は押せないようにする */}
+            <Button disabled={isPending} size='lg' className='w-full'>
+              Register
             </Button>
           </form>
         </Form>
@@ -134,7 +137,7 @@ export const SignUpCard = () => {
       </div>
       <CardContent className='p-7 flex flex-col gap-y-4'>
         <Button
-          disabled={false}
+          disabled={isPending}
           variant='secondary'
           size='lg'
           className='w-full'
@@ -143,7 +146,7 @@ export const SignUpCard = () => {
           Login with Google
         </Button>
         <Button
-          disabled={false}
+          disabled={isPending}
           variant='secondary'
           size='lg'
           className='w-full'

@@ -6,7 +6,11 @@ import { cn } from '@/lib/utils';
 
 // react-queryを使うため
 import { QueryProvider } from '@/components/query-provider';
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: false,
+});
 
 export const metadata: Metadata = {
   title: 'Task Flow',
