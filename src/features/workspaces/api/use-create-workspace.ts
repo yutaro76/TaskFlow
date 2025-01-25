@@ -11,8 +11,12 @@ export const useCreateWorkspace = () => {
   // useMutation<ResponseType, Error, RequestType>は非同期操作を管理するための Reactフック。
   const mutation = useMutation<ResponseType, Error, RequestType>({
     // mutationFnはuseMutationと一緒に使われる。
-    mutationFn: async ({ json }) => {
-      const response = await client.api.workspaces['$post']({ json });
+
+    mutationFn: async ({ form }) => {
+      // formデータを使用することで、画像ファイルなどのバイナリデータを含む複数のフィールドを一度に送信することができる。
+      // application/json 形式ではバイナリデータを直接送信できない。
+      // form にはワークスペースの名前、ID、画像が含まれる。
+      const response = await client.api.workspaces['$post']({ form });
       if (!response.ok) {
         throw new Error('Failed to create workspace');
       }
