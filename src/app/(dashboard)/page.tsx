@@ -2,6 +2,7 @@
 import { CreateWorkspaceForm } from '@/features/workspaces/components/create-workspace-form';
 import { getCurrent } from '@/features/auth/actions';
 import { redirect } from 'next/navigation';
+import { getWorkspaces } from '@/features/workspaces/actions';
 
 export default async function Home() {
   const user = await getCurrent();
@@ -22,6 +23,16 @@ export default async function Home() {
   if (!user) {
     redirect('/sign-in');
   }
+
+  const workspaces = await getWorkspaces();
+  if (workspaces.total === 0) {
+    redirect('/workspace/create');
+  } else {
+    // ユーザーが所属するワークスペースのリストで一番最初にあるもののIDを取得する。
+    // ワークスペースの作成日時の新しい順に並べ替えられているため、最初のワークスペースが最新のワークスペースである。
+    redirect(`/workspaces/${workspaces.documents[0].$id}`);
+  }
+
   return (
     <div>
       <div className='bg-neutral-500 p-4 h-full'>

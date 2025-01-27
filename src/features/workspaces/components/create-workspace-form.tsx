@@ -25,6 +25,7 @@ import { useRef } from 'react';
 import { ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useRouter } from 'next/navigation';
 
 interface CreateWorkspaceFormProps {
   // onCancel プロパティを使用することで、キャンセルボタンがクリックされたときに特定の処理を実行できるようになる。
@@ -33,6 +34,7 @@ interface CreateWorkspaceFormProps {
 }
 
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+  const router = useRouter();
   const { mutate, isPending } = useCreateWorkspace();
   // inputRefはinputフィールドに入力された値を取得し、その値をアップロードするために使われる。
   const inputRef = useRef<HTMLInputElement>(null);
@@ -51,12 +53,14 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       ...values,
       image: values.image instanceof File ? values.image : '',
     };
+    // dataはmutateの中に含まれており、useCreateWorkspaceフックで定義され、エンドポイントで取得したデータが入っている。
     mutate(
       // finalValues にはワークスペースの名前、画像が含まれる。
       { form: finalValues },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
           form.reset();
+          router.push(`/workspaces/${data.$id}`);
         },
       }
     );
@@ -128,7 +132,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                       <div className='flex flex-col'>
                         <p className='text-sm'>Workspace Icon</p>
                         <p className='text-sm text-muted-foreground'>
-                          JPG, PNG, SVG, or JPEG, max 1mb
+                          JPG, PNG, SVG, or JPEG, max 1MB
                         </p>
                         <input
                           className='hidden'
