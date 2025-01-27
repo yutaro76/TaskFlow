@@ -26,6 +26,7 @@ import { ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 interface CreateWorkspaceFormProps {
   // onCancel プロパティを使用することで、キャンセルボタンがクリックされたときに特定の処理を実行できるようになる。
@@ -168,6 +169,10 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 variant='secondary'
                 onClick={onCancel}
                 disabled={isPending}
+                // onCancel が渡されていない場合、キャンセルボタンは非表示になる。
+                // すでにワークスペースがある状態でワークスペースを作成する際は、CreateWorkspaceFormからonCancelが渡されるため、表示。
+                // 全くワークスペースがない状態で新たにワークスペースを作る場合はonCancelが渡されないため、非表示。
+                className={cn(!onCancel && 'invisible')}
               >
                 Cancel
               </Button>

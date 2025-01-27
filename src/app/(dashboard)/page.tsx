@@ -26,7 +26,7 @@ export default async function Home() {
 
   const workspaces = await getWorkspaces();
   if (workspaces.total === 0) {
-    redirect('/workspace/create');
+    redirect('/workspaces/create');
   } else {
     // ユーザーが所属するワークスペースのリストで一番最初にあるもののIDを取得する。
     // ワークスペースの作成日時の新しい順に並べ替えられているため、最初のワークスペースが最新のワークスペースである。
