@@ -1,6 +1,5 @@
 'use client';
-import { useCreateWorkspace } from '@/features/workspaces/api/use-create-workspace';
-import { createWorkspaceSchema } from '@/features/workspaces/schema';
+import { updateWorkspaceSchema } from '@/features/workspaces/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -22,42 +21,49 @@ import {
 import { Input } from '../../../components/ui/input';
 import { Button } from '../../../components/ui/button';
 import { useRef } from 'react';
-import { ImageIcon } from 'lucide-react';
+import { ArrowLeftIcon, ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { Workspace } from '../types';
+import { useUpdateWorkspace } from '../api/use-update-workspace';
 
-interface CreateWorkspaceFormProps {
+interface EditWorkspaceFormProps {
   // onCancel プロパティを使用することで、キャンセルボタンがクリックされたときに特定の処理を実行できるようになる。
   // どのタイミングでモーダルがクリックされてモーダルが閉じられるかを明記するために予め型を定義しておく。
   onCancel?: () => void;
+  initialValues: Workspace;
 }
 
-export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+export const EditWorkspaceForm = ({
+  onCancel,
+  initialValues,
+}: EditWorkspaceFormProps) => {
   const router = useRouter();
-  const { mutate, isPending } = useCreateWorkspace();
+  const { mutate, isPending } = useUpdateWorkspace();
   // inputRefはinputフィールドに入力された値を取得し、その値をアップロードするために使われる。
   const inputRef = useRef<HTMLInputElement>(null);
   // フォームのバリデーション
-  // z.infer<typeof createWorkspaceSchema>の型を使用する。
+  // z.infer<typeof updateWorkspaceSchema>の型を使用する。
   // Zod スキーマから TypeScript の型を推論するために使用される。
-  const form = useForm<z.infer<typeof createWorkspaceSchema>>({
+  const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     // zodResolver を使用して、Zod スキーマをバリデーションに使用する。
-    resolver: zodResolver(createWorkspaceSchema),
+    resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
-      name: '',
+      ...initialValues,
+      image: initialValues.imageUrl ?? '',
     },
   });
-  const onSubmit = (values: z.infer<typeof createWorkspaceSchema>) => {
+  const onSubmit = (values: z.infer<typeof updateWorkspaceSchema>) => {
     const finalValues = {
       ...values,
       image: values.image instanceof File ? values.image : '',
     };
-    // dataはmutateの中に含まれており、useCreateWorkspaceフックで定義され、エンドポイントで取得したデータが入っている。
+    // dataはmutateの中に含まれており、useUpdateWorkspaceフックで定義され、エンドポイントで取得したデータが入っている。
     mutate(
       // finalValues にはワークスペースの名前、画像が含まれる。
-      { form: finalValues },
+      { form: finalValues, param: { workspaceId: initialValues.$id } },
       {
         onSuccess: ({ data }) => {
           form.reset();
@@ -78,9 +84,22 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
 
   return (
     <Card className='w-full h-full border-none shadow-none'>
-      <CardHeader className='flex p-7'>
+      <CardHeader className='flex flex-row items-center gap-x-4 p-7 space-y-0'>
         <CardTitle className='text-xl font-bold'>
-          Create a new workspace
+          <Button
+            size='sm'
+            variant='secondary'
+            onClick={
+              // onCancelが渡されている場合、キャンセルボタンがクリックされたときにonCancelを実行する。
+              // onCancelは通常のフローでsettingsをクリックして遷移してきたときに渡されるようになっている。
+              onCancel
+                ? onCancel
+                : () => router.push(`/workspaces/${initialValues.$id}`)
+            }
+          >
+            <ArrowLeftIcon className='size-4 mr-2' />
+            {initialValues.name}
+          </Button>
         </CardTitle>
       </CardHeader>
       <div className='px-7'>
@@ -120,7 +139,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                               // ファイルのURLをブラウザに入力すればちゃんと画像が表示される。
                               field.value instanceof File
                                 ? URL.createObjectURL(field.value)
-                                : // Fileインスタンスでない場合、そのままの値を使用します。
+                                : // Fileインスタンスでない場合、そのままの値を使用。
                                   field.value
                             }
                           />
@@ -191,15 +210,12 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 variant='secondary'
                 onClick={onCancel}
                 disabled={isPending}
-                // onCancel が渡されていない場合、キャンセルボタンは非表示になる。
-                // すでにワークスペースがある状態でワークスペースを作成する際は、CreateWorkspaceFormからonCancelが渡されるため、表示。
-                // 全くワークスペースがない状態で新たにワークスペースを作る場合はonCancelが渡されないため、非表示。
                 className={cn(!onCancel && 'invisible')}
               >
                 Cancel
               </Button>
               <Button type='submit' size-='lg' disabled={isPending}>
-                Create Workspace
+                Save Changes
               </Button>
             </div>
           </form>

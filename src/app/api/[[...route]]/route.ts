@@ -16,6 +16,7 @@ const routes = app.route('/auth', auth).route('/workspaces', workspaces);
 // このファイルを例えばGETリクエストで呼び出すと、appが実行される。
 export const GET = handle(app);
 export const POST = handle(app);
+export const PATCH = handle(app);
 
 // routesには/authだけでなく、他のエンドポイントも含まれ、その型をAppTypeとしてエクスポートする。
 export type AppType = typeof routes;

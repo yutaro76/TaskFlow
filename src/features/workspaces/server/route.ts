@@ -1,7 +1,7 @@
 import { sessionMiddleware } from '@/lib/session-middleware';
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
-import { createWorkspaceSchema } from '../schema';
+import { createWorkspaceSchema, updateWorkspaceSchema } from '../schema';
 import {
   DATABASE_ID,
   IMAGES_BUCKET_ID,
@@ -11,6 +11,7 @@ import {
 import { ID, Query } from 'node-appwrite';
 import { MemberRole } from '@/features/members/types';
 import { generateInviteCode } from '@/lib/utils';
+import { getMember } from '@/features/members/utils';
 
 const app = new Hono()
   .get('/', sessionMiddleware, async (c) => {
@@ -117,6 +118,70 @@ const app = new Hono()
         role: MemberRole.ADMIN,
       });
 
+      return c.json({ data: workspace });
+    }
+  )
+  // ワークスペースの名前と画像を更新するためのエンドポイント
+  .patch(
+    '/:workspaceId',
+    sessionMiddleware,
+    zValidator('form', updateWorkspaceSchema),
+    // Honoでcが使えるようになる。
+    async (c) => {
+      const databases = c.get('databases');
+      // Appwrite のストレージサービスを取得するためのコード
+      const storage = c.get('storage');
+      const user = c.get('user');
+
+      const { workspaceId } = c.req.param();
+      const { name, image } = c.req.valid('form');
+
+      // 現在表示されているワークスペースにログインしているメンバーの情報を取得する。
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id,
+      });
+
+      if (!member || member.role != MemberRole.ADMIN) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+
+      let uploadedImageUrl: string | undefined;
+
+      if (image instanceof File) {
+        // createFileはAppwriteのStorageクラスから提供されるメソッド
+        const file = await storage.createFile(
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          image
+        );
+
+        // getFilePreviewはAppwriteのStorageクラスから提供されるメソッド
+        // arrayBufferには画像のバイナリデータが入る。バイナリデータとは、画像や音声、動画などのデータを表すためのデータ形式。
+        const arrayBuffer = await storage.getFilePreview(
+          IMAGES_BUCKET_ID,
+          // file.$id はアップロードされた画像のID
+          file.$id
+        );
+
+        // Bufferはバイナリデータを扱うためのNode.js の標準ライブラリで提供されるグローバルオブジェクト
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
+          arrayBuffer
+        ).toString('base64')}`;
+      } else {
+        uploadedImageUrl = image;
+      }
+
+      const workspace = await databases.updateDocument(
+        DATABASE_ID,
+        WORKSPACES_ID,
+        workspaceId,
+        {
+          name,
+          imageUrl: uploadedImageUrl,
+        }
+      );
       return c.json({ data: workspace });
     }
   );

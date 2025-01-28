@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 import { SettingsIcon, UsersIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -7,6 +9,8 @@ import {
   GoHome,
   GoHomeFill,
 } from 'react-icons/go';
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
+import { usePathname } from 'next/navigation';
 
 const routes = [
   {
@@ -36,13 +40,18 @@ const routes = [
 ];
 
 export const Navigation = () => {
+  const workspaceId = useWorkspaceId();
+  const pathname = usePathname();
+
   return (
     <ul className='flex flex-col'>
       {routes.map((item) => {
-        const isActive = false;
+        const fullHref = `/workspaces/${workspaceId}${item.href}`;
+        // isActiveのもの（最初の状態はHome）は見た目が強調される。
+        const isActive = pathname === fullHref;
         const Icon = isActive ? item.activeIcon : item.icon;
         return (
-          <Link key={item.href} href={item.href}>
+          <Link key={item.href} href={fullHref}>
             <div
               className={cn(
                 // gap-2.5 フレックスアイテム間の間隔を 0.625rem
