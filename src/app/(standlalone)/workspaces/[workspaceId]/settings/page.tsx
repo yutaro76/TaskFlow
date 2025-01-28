@@ -1,5 +1,5 @@
-import { getCurrent } from '@/features/auth/actions';
-import { getWorkspace } from '@/features/workspaces/actions';
+import { getCurrent } from '@/features/auth/queries';
+import { getWorkspace } from '@/features/workspaces/queries';
 import { EditWorkspaceForm } from '@/features/workspaces/components/edit-workspace-form';
 import { redirect } from 'next/navigation';
 
@@ -29,7 +29,7 @@ const WorkspaceIdSettingsPage = async ({
 
   return (
     <div className='w-full lg:max-w-xl'>
-      <EditWorkspaceForm initialValues={initialValues} />;
+      <EditWorkspaceForm initialValues={initialValues} />
     </div>
   );
 };
