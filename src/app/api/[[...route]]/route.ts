@@ -17,6 +17,7 @@ const routes = app.route('/auth', auth).route('/workspaces', workspaces);
 export const GET = handle(app);
 export const POST = handle(app);
 export const PATCH = handle(app);
+export const DELETE = handle(app);
 
 // routesには/authだけでなく、他のエンドポイントも含まれ、その型をAppTypeとしてエクスポートする。
 export type AppType = typeof routes;

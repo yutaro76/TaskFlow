@@ -184,6 +184,27 @@ const app = new Hono()
       );
       return c.json({ data: workspace });
     }
-  );
+  )
+  .delete('/:workspaceId', sessionMiddleware, async (c) => {
+    const databases = c.get('databases');
+    const user = c.get('user');
+
+    const { workspaceId } = c.req.param();
+
+    // getMember関数を使って、現在ログインしているユーザーの情報を取得
+    const member = await getMember({
+      databases,
+      workspaceId,
+      userId: user.$id,
+    });
+
+    if (!member || member.role != MemberRole.ADMIN) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+
+    await databases.deleteDocument(DATABASE_ID, WORKSPACES_ID, workspaceId);
+
+    return c.json({ data: { $id: workspaceId } });
+  });
 
 export default app;
