@@ -6,6 +6,7 @@ import { handle } from 'hono/vercel';
 import auth from '@/features/auth/server/route';
 import workspaces from '@/features/workspaces/server/route';
 import members from '@/features/members/server/route';
+import projects from '@/features/projects/server/route';
 
 const app = new Hono().basePath('/api');
 
@@ -14,7 +15,8 @@ const app = new Hono().basePath('/api');
 const routes = app
   .route('/auth', auth)
   .route('/workspaces', workspaces)
-  .route('/members', members);
+  .route('/members', members)
+  .route('/projects', projects);
 
 // handle(app)でhonoで作ったものをvercelで使えるようにする。
 // このファイルを例えばGETリクエストで呼び出すと、appが実行される。
