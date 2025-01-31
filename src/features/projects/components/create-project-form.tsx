@@ -27,6 +27,7 @@ import Image from 'next/image';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
+import { useRouter } from 'next/navigation';
 
 interface CreateProjectFormProps {
   // onCancel プロパティを使用することで、キャンセルボタンがクリックされたときに特定の処理を実行できるようになる。
@@ -36,7 +37,7 @@ interface CreateProjectFormProps {
 
 export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   const workspaceId = useWorkspaceId();
-
+  const router = useRouter();
   const { mutate, isPending } = useCreateProject();
   // inputRefはinputフィールドに入力された値を取得し、その値をアップロードするために使われる。
   const inputRef = useRef<HTMLInputElement>(null);
@@ -62,7 +63,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
       {
         onSuccess: ({ data }) => {
           form.reset();
-          // Todo: redirect to project page
+          router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
         },
       }
     );

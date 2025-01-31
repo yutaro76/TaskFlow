@@ -23,10 +23,6 @@ const WorkspaceIdSettingsPage = async ({
   // paramsはUrlのパラメーター[workspaceId]を取得し、それを利用してgetWorkspaceでワークスペースの情報を取得する。
   const initialValues = await getWorkspace({ workspaceId: params.workspaceId });
 
-  if (!initialValues) {
-    redirect(`/workspaces/${params.workspaceId}`);
-  }
-
   return (
     <div className='w-full lg:max-w-xl'>
       <EditWorkspaceForm initialValues={initialValues} />

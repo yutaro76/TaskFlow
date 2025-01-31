@@ -1,6 +1,7 @@
 import { client } from '@/lib/rpc';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { InferRequestType, InferResponseType } from 'hono';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 type ResponseType = InferResponseType<
@@ -13,6 +14,7 @@ type RequestType = InferRequestType<
 >;
 
 export const useUpdateWorkspace = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   // useMutation<ResponseType, Error, RequestType>は非同期操作を管理するための Reactフック。
   const mutation = useMutation<ResponseType, Error, RequestType>({
@@ -35,6 +37,7 @@ export const useUpdateWorkspace = () => {
     // dataには上側のresponse.json()で取得したデータが入る。
     onSuccess: ({ data }) => {
       toast.success('Workspace updated');
+      router.refresh();
       // invalidatedQueriesは指定されたクエリ（ここではworkspaces）のキャッシュ無効にするためのメソッド。
       // use-get-workspace.tsでクエリキーが再度付与される。
       queryClient.invalidateQueries({ queryKey: ['workspaces'] });
