@@ -10,9 +10,12 @@ import { usePathname } from 'next/navigation';
 import { RiAddCircleFill } from 'react-icons/ri';
 
 export const Projects = () => {
-  const workspaceId = useWorkspaceId();
+  let workspaceId = useWorkspaceId();
   const { open } = useCreateProjectModal();
   const pathname = usePathname();
+  if (workspaceId === undefined) {
+    workspaceId = '679f3d52000d6523777d';
+  }
   const { data } = useGetProjects({
     workspaceId,
   });

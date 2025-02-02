@@ -1,5 +1,6 @@
 import { client } from '@/lib/rpc';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+// import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { InferResponseType } from 'hono';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -10,7 +11,7 @@ type ResponseType = InferResponseType<(typeof client.api.auth.logout)['$post']>;
 export const useLogout = () => {
   const router = useRouter();
   // useQueryClientは現在のユーザーのインスタンスを取得するためのフック。
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   // useMutationはデータの変更（作成、更新、削除など）を行うために使用されるフック。
   const mutation = useMutation<ResponseType, Error>({
     mutationFn: async () => {
@@ -26,8 +27,8 @@ export const useLogout = () => {
       // クライアント側でログアウト処理
       toast.success('Logged out');
       router.refresh();
-      queryClient.invalidateQueries({ queryKey: ['current'] });
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+      // queryClient.invalidateQueries({ queryKey: ['current'] });
+      // queryClient.invalidateQueries({ queryKey: ['workspaces'] });
     },
     onError: () => {
       toast.error('Failed to logout');
