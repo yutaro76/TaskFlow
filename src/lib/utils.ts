@@ -18,3 +18,13 @@ export function generateInviteCode(length: number) {
 
   return result;
 }
+
+export function snakeCaseToTitleCase(str: string) {
+  return (
+    str
+      .toLocaleLowerCase()
+      .replace(/_/g, ' ')
+      // \bはここではスペース、\wは一文字目なので、スペースの後の一文字目は大文字に変換する。
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+  );
+}
