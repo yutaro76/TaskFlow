@@ -16,6 +16,32 @@ import { createAdminClient } from '@/lib/appwrite';
 import { Project } from '@/features/projects/types';
 
 const app = new Hono()
+  .delete('/:taskId', sessionMiddleware, async (c) => {
+    const user = c.get('user');
+    const databases = c.get('databases');
+    const { taskId } = c.req.param();
+
+    const task = await databases.getDocument<Task>(
+      DATABASE_ID,
+      TASKS_ID,
+      taskId
+    );
+
+    const member = await getMember({
+      // getMember関数は定義元でdatabasesを使用するとされているため、DATABASE_IDでは代用できない。
+      databases,
+      workspaceId: task.workspaceId,
+      userId: user.$id,
+    });
+
+    if (!member) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+
+    await databases.deleteDocument(DATABASE_ID, TASKS_ID, taskId);
+
+    return c.json({ data: { $id: task.$id } });
+  })
   .get(
     '/',
     sessionMiddleware,
@@ -202,6 +228,100 @@ const app = new Hono()
 
       return c.json({ data: task });
     }
-  );
+  )
+  .patch(
+    '/:taskId',
+    sessionMiddleware,
+    zValidator('json', createTaskSchema.partial()),
+    async (c) => {
+      const user = c.get('user');
+      const databases = c.get('databases');
+      const { name, status, description, projectId, dueDate, assigneeId } =
+        c.req.valid('json');
+      const { taskId } = c.req.param();
+
+      const existingTask = await databases.getDocument<Task>(
+        DATABASE_ID,
+        TASKS_ID,
+        taskId
+      );
+
+      const member = await getMember({
+        databases,
+        workspaceId: existingTask.workspaceId,
+        userId: user.$id,
+      });
+
+      // もし自分自身がこのワークスペースにいなければタスクは作成できないようにする。
+      if (!member) {
+        return c.json({ error: 'Unauthorized' }, 401);
+      }
+
+      const task = await databases.updateDocument<Task>(
+        DATABASE_ID,
+        TASKS_ID,
+        taskId,
+        {
+          name,
+          status,
+          projectId,
+          dueDate,
+          assigneeId,
+          description,
+        }
+      );
+
+      return c.json({ data: task });
+    }
+  )
+  .get('/:taskId', sessionMiddleware, async (c) => {
+    const currentUser = c.get('user');
+    const databases = c.get('databases');
+    // userの情報を取得するためのインスタンス。
+    // このusersにusersの情報が格納されるわけではない。AppwriteのUsersクラスのインスタンスが入る。
+    const { users } = await createAdminClient();
+    const { taskId } = c.req.param();
+
+    const task = await databases.getDocument<Task>(
+      DATABASE_ID,
+      TASKS_ID,
+      taskId
+    );
+
+    const currentMember = await getMember({
+      databases,
+      workspaceId: task.workspaceId,
+      userId: currentUser.$id,
+    });
+
+    if (!currentMember) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+
+    const project = await databases.getDocument<Project>(
+      DATABASE_ID,
+      PROJECTS_ID,
+      task.projectId
+    );
+
+    // taskのassigneeの情報が部分的に入る。
+    const member = await databases.getDocument(
+      DATABASE_ID,
+      MEMBERS_ID,
+      task.assigneeId
+    );
+
+    // userたち（そのワークスペースにいる人）からassigneeのidを使ってassigneeの情報をさらに取得する。
+    const user = await users.get(member.userId);
+
+    // assigneeの情報が入ったmemberを展開して、nameとemailを追加する。
+    const assignee = {
+      ...member,
+      name: user.name,
+      email: user.email,
+    };
+
+    return c.json({ data: { ...task, project, assignee } });
+  });
 
 export default app;
