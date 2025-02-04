@@ -12,6 +12,7 @@ import { DataFilters } from './data-filters';
 import { useTaskFilters } from '../hooks/use-task-filters';
 import { DataTable } from './data-table';
 import { columns } from './columns';
+import { DataKanban } from './data-kanban';
 
 export const TaskViewSwitcher = () => {
   // URLの最後に?task-view=tableのようにタブごとに違うURLを作成する。
@@ -70,7 +71,9 @@ export const TaskViewSwitcher = () => {
               <DataTable columns={columns} data={tasks?.documents ?? []} />
             </TabsContent>
             <TabsContent value='kanban' className='mt-0'>
-              {JSON.stringify(tasks)}
+              {/* tasksオブジェクトが存在し、その中にdocumentsプロパティが存在する場合はその値を使用し、そうでない場合は空の配列を使用する。 */}
+              {/* ?.を使うと、値が無くてもエラーが出なくなる。 */}
+              <DataKanban data={tasks?.documents ?? []} />
             </TabsContent>
             <TabsContent value='calendar' className='mt-0'>
               {JSON.stringify(tasks)}
