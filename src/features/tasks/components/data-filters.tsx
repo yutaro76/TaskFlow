@@ -18,6 +18,7 @@ interface DataFiltersProps {
   hideProjectFilter?: boolean;
 }
 
+// eslint-disable-next-line
 export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
   const workspaceId = useWorkspaceId();
   const { data: projects, isLoading: isLoadingProjects } = useGetProjects({

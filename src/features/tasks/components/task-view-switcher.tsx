@@ -13,6 +13,9 @@ import { useTaskFilters } from '../hooks/use-task-filters';
 import { DataTable } from './data-table';
 import { columns } from './columns';
 import { DataKanban } from './data-kanban';
+import { useCallback } from 'react';
+import { TaskStatus } from '../types';
+import { useBulkUpdateTasks } from '../api/use-bulk-update-tasks';
 
 export const TaskViewSwitcher = () => {
   // URLの最後に?task-view=tableのようにタブごとに違うURLを作成する。
@@ -23,6 +26,8 @@ export const TaskViewSwitcher = () => {
   const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
   const workspaceId = useWorkspaceId();
   const { open } = useCreateTaskModal();
+  const { mutate: bulkUpdate } = useBulkUpdateTasks();
+
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
     workspaceId,
     status,
@@ -30,6 +35,15 @@ export const TaskViewSwitcher = () => {
     projectId,
     dueDate,
   });
+
+  // useCallbackで中の関数を使い回すことができる。
+  // タスクが動かされるたびに呼び出される。
+  const onKanbanChange = useCallback(
+    (tasks: { $id: string; status: TaskStatus; position: number }[]) => {
+      bulkUpdate({ json: { tasks } });
+    },
+    [bulkUpdate]
+  );
 
   return (
     // flex-1 中の要素が均等に横幅を占有する。中の長さは文字の長さによって変わる。
@@ -73,7 +87,10 @@ export const TaskViewSwitcher = () => {
             <TabsContent value='kanban' className='mt-0'>
               {/* tasksオブジェクトが存在し、その中にdocumentsプロパティが存在する場合はその値を使用し、そうでない場合は空の配列を使用する。 */}
               {/* ?.を使うと、値が無くてもエラーが出なくなる。 */}
-              <DataKanban data={tasks?.documents ?? []} />
+              <DataKanban
+                onChange={onKanbanChange}
+                data={tasks?.documents ?? []}
+              />
             </TabsContent>
             <TabsContent value='calendar' className='mt-0'>
               {JSON.stringify(tasks)}
