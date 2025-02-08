@@ -1,0 +1,65 @@
+/* 曜日部分 */
+.rbc-header {
+  @apply text-sm;
+  @apply font-normal;
+  @apply pb-4;
+  @apply text-muted-foreground;
+  @apply border-b-0;
+}
+
+/* 曜日部分 */
+/* 区切りの線を消す */
+.rbc-header + .rbc-header {
+  @apply border-l-0;
+}
+
+/* 日付の数字 */
+.rbc-button-link {
+  @apply text-sm;
+  @apply font-normal;
+  @apply text-muted-foreground;
+}
+
+/* ボーダーを追加 */
+.rbc-month-row {
+  @apply min-h-[180px];
+  /* 上ボーダーを適用 */
+  @apply border-t;
+  /* 左右のボーダーを適用 */
+  @apply border-x;
+}
+
+/* 四隅を丸くする */
+/* 上左右 */
+:not(.rbc-month-row ~ .rbc-month-row).rbc-month-row {
+  @apply rounded-t-md;
+}
+/* 下左右 */
+.rbc-month-row:last-of-type {
+  @apply border-b;
+  @apply rounded-b-md;
+}
+
+/* カレンダーの外側の線を消す */
+.rbc-month-view {
+  @apply border-none;
+}
+
+/* セル内の日付部分にpaddingを設定し日付の表示をずらす */
+.rbc-date-cell {
+  @apply p-2;
+}
+
+/* 今日の表示は親要素のbackgroundを弾き継ぐ */
+/* .rbc-today {
+  background: inherit;
+} */
+
+/* カレンダー内の別月の日付の表示は親要素のbackgroundを弾き継ぐ */
+/* .rbc-off-range-bg {
+  background: inherit;
+} */
+
+.rbc-month-row {
+  @apply min-h-[180px];
+}
