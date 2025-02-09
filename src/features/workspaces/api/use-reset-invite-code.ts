@@ -1,7 +1,6 @@
 import { client } from '@/lib/rpc';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { InferRequestType, InferResponseType } from 'hono';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 type ResponseType = InferResponseType<
@@ -13,7 +12,6 @@ type RequestType = InferRequestType<
 >;
 
 export const useResetInviteCode = () => {
-  const router = useRouter();
   const queryClient = useQueryClient();
   // useMutation<ResponseType, Error, RequestType>は非同期操作を管理するための Reactフック。
   const mutation = useMutation<ResponseType, Error, RequestType>({
@@ -35,7 +33,7 @@ export const useResetInviteCode = () => {
     // dataは上側のresponseで帰ってきた値が入る。route.tsのdeleteエンドポイントで、workspaceのIDが返ってくる。
     onSuccess: ({ data }) => {
       toast.success('Invite code reset');
-      router.refresh();
+
       queryClient.invalidateQueries({ queryKey: ['workspaces'] });
       queryClient.invalidateQueries({ queryKey: ['workspaces', data.$id] });
     },

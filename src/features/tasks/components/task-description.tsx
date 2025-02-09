@@ -34,7 +34,7 @@ export const TaskDescription = ({ task }: TaskDescriptionProps) => {
       <div className='flex items-center justify-between'>
         <p className='text-lg font-semibold'>overview</p>
         <Button
-          // isEditingの真偽値を反転させる。falseならtrue、trueならfalse。
+          // isEditingの真偽値を反転させる。fal
           onClick={() => setIsEditing((prev) => !prev)}
           size='sm'
           variant='secondary'
@@ -68,9 +68,7 @@ export const TaskDescription = ({ task }: TaskDescriptionProps) => {
         </div>
       ) : (
         <div>
-          {task.description ? (
-            <p className='line-clamp-4'>{task.description}</p>
-          ) : (
+          {task.description || (
             <span className='text-muted-foreground'>No description</span>
           )}
         </div>

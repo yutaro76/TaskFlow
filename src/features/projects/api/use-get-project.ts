@@ -1,22 +1,22 @@
 import { client } from '@/lib/rpc';
 import { useQuery } from '@tanstack/react-query';
 
-interface UseGetWorkspaceProps {
-  workspaceId: string;
+interface UseGetProjectProps {
+  projectId: string;
 }
 
-export const useGetWorkspace = ({ workspaceId }: UseGetWorkspaceProps) => {
+export const useGetProject = ({ projectId }: UseGetProjectProps) => {
   const query = useQuery({
     // queryKeyはクエリのキーを指定するためのプロパティ。
     // 特定のワークスペースに関連するプロジェクトを取得する。
-    queryKey: ['workspace', workspaceId],
+    queryKey: ['project', projectId],
     queryFn: async () => {
-      const response = await client.api.workspaces[':workspaceId']['$get']({
-        param: { workspaceId },
+      const response = await client.api.projects[':projectId']['$get']({
+        param: { projectId },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch workspace');
+        throw new Error('Failed to fetch project');
       }
 
       const { data } = await response.json();

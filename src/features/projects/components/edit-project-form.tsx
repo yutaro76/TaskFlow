@@ -65,14 +65,7 @@ export const EditProjectForm = ({
     // dataはmutateの中に含まれており、useUpdateWorkspaceフックで定義され、エンドポイントで取得したデータが入っている。
     mutate(
       // finalValues にはワークスペースの名前、画像が含まれる。
-      { form: finalValues, param: { projectId: initialValues.$id } },
-      {
-        onSuccess: () => {
-          router.push(
-            `/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`
-          );
-        },
-      }
+      { form: finalValues, param: { projectId: initialValues.$id } }
     );
   };
 

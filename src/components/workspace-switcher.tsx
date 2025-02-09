@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { useGetWorkspaces } from '@/features/workspaces/api/use-get-workspace';
+import { useGetWorkspaces } from '@/features/workspaces/api/use-get-workspaces';
 import { WorkspaceAvatar } from '@/features/workspaces/components/workspace-avatar';
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import { useRouter } from 'next/navigation';

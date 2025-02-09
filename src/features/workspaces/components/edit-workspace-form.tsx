@@ -69,12 +69,7 @@ export const EditWorkspaceForm = ({
     // dataはmutateの中に含まれており、useUpdateWorkspaceフックで定義され、エンドポイントで取得したデータが入っている。
     mutate(
       // finalValues にはワークスペースの名前、画像が含まれる。
-      { form: finalValues, param: { workspaceId: initialValues.$id } },
-      {
-        onSuccess: () => {
-          form.reset();
-        },
-      }
+      { form: finalValues, param: { workspaceId: initialValues.$id } }
     );
   };
 
