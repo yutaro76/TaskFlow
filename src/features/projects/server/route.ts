@@ -96,10 +96,11 @@ const app = new Hono()
       }
 
       // ワークスペース内のプロジェクトを取得して変数に入れる。
-      const projects = await databases.listDocuments(DATABASE_ID, PROJECTS_ID, [
-        Query.equal('workspaceId', workspaceId),
-        Query.orderDesc('$createdAt'),
-      ]);
+      const projects = await databases.listDocuments<Project>(
+        DATABASE_ID,
+        PROJECTS_ID,
+        [Query.equal('workspaceId', workspaceId), Query.orderDesc('$createdAt')]
+      );
 
       return c.json({ data: projects });
     }
