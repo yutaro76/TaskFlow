@@ -25,6 +25,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema } from '../schemas';
 import { useRegister } from '../api/use-register';
+import { signUpWithGithub, signUpWithGoogle } from '@/lib/oath';
 
 // ↓auth/schemas.tsにバリデーション部分を書き出しregisterSchemaとしたため、こちらはコメントアウト
 // zodのスキーマを定義
@@ -141,6 +142,7 @@ export const SignUpCard = () => {
           variant='secondary'
           size='lg'
           className='w-full'
+          onClick={() => signUpWithGoogle()}
         >
           <FcGoogle className='mr-2 size-5' />
           Login with Google
@@ -150,6 +152,7 @@ export const SignUpCard = () => {
           variant='secondary'
           size='lg'
           className='w-full'
+          onClick={() => signUpWithGithub()}
         >
           <FaGithub className='mr-2 size-5' />
           Login with Github

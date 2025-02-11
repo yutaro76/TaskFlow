@@ -207,7 +207,7 @@ export const MembersList = ({ data, total }: MembersListProps) => {
                     <p className='text-lg font-medium line-clamp-1'>
                       {member.name}
                     </p>
-                    <p className='text-lg font-medium line-clamp-1'>
+                    <p className='text-sm font-medium line-clamp-1'>
                       {member.email}
                     </p>
                   </div>

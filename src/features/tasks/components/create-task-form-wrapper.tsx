@@ -4,6 +4,7 @@ import { useGetProjects } from '@/features/projects/api/use-get-projects';
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import { Loader } from 'lucide-react';
 import { CreateTaskForm } from './create-task-form';
+import { CreateProjectForm } from '@/features/projects/components/create-project-form';
 
 interface CreateTaskFormWrapperProps {
   onCancel: () => void;
@@ -43,6 +44,10 @@ export const CreateTaskFormWrapper = ({
         </CardContent>
       </Card>
     );
+  }
+
+  if (projects?.total === 0) {
+    return <CreateProjectForm onCancel={close} />;
   }
 
   return (

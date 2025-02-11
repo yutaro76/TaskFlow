@@ -40,6 +40,8 @@ export const UserButton = () => {
     ? name.charAt(0).toUpperCase()
     : email.charAt(0).toUpperCase() ?? 'U';
 
+  const userEmailFirst = user.email.split('@')[0];
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className='outline-none relative'>
@@ -67,7 +69,7 @@ export const UserButton = () => {
           {/* 名前とメール */}
           <div className='flex flex-col items-center justify-center'>
             <p className='text-sm font-medium text-neutral-900'>
-              {name || 'User'}
+              {name || userEmailFirst || 'User'}
             </p>
             <p className='text-xs text-neutral-500'>{email}</p>
           </div>

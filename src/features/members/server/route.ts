@@ -44,10 +44,11 @@ const app = new Hono()
         members.documents.map(async (member) => {
           // getはnode-appwriteのUsersクラスのメソッド
           const user = await users.get(member.userId);
+          const userEmailFirst = user.email.split('@')[0];
           // メンバーを一人ずつ追加
           return {
             ...member,
-            name: user.name,
+            name: user.name || userEmailFirst,
             email: user.email,
           };
         })

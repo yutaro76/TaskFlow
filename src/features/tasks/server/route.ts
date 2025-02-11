@@ -138,10 +138,11 @@ const app = new Hono()
       const assignees = await Promise.all(
         members.documents.map(async (member) => {
           const user = await users.get(member.userId);
+          const userEmailFirst = user.email.split('@')[0];
           // returnされる時点では、assigneesにはアサインした人それぞれのid, name, emailがそれぞれ格納される。
           return {
             ...member,
-            name: user.name,
+            name: user.name || userEmailFirst,
             email: user.email,
           };
         })
@@ -313,11 +314,11 @@ const app = new Hono()
 
     // userたち（そのワークスペースにいる人）からassigneeのidを使ってassigneeの情報をさらに取得する。
     const user = await users.get(member.userId);
-
+    const userEmailFirst = user.email.split('@')[0];
     // assigneeの情報が入ったmemberを展開して、nameとemailを追加する。
     const assignee = {
       ...member,
-      name: user.name,
+      name: user.name || userEmailFirst,
       email: user.email,
     };
 
