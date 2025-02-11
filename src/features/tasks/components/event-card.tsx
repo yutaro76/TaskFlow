@@ -5,11 +5,11 @@ import { MemberAvatar } from '@/features/members/components/member-avatar';
 import { ProjectAvatar } from '@/features/projects/components/project-avatar';
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 import { useRouter } from 'next/navigation';
+import { Member } from '@/features/members/types';
 
 interface EventCardProps {
   title: string;
-  // eslint-disable-next-line
-  assignee: any;
+  assignee: Member;
   project: Project;
   status: TaskStatus;
   id: string;

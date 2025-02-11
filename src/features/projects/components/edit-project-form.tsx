@@ -81,7 +81,8 @@ export const EditProjectForm = ({
   // カスタムフックから渡される値を別の名前で保存する。
   // mutateはワークスペースの保存に関するもの。
   // isPendingはワークスペースの保存が実行中かどうかを判定する。useMutationについてくる状態を表すもの。
-  const { mutate: deleteProject } = useDeleteProject();
+  const { mutate: deleteProject, isPending: isDeletingProject } =
+    useDeleteProject();
 
   const [DeleteDialog, confirmDelete] = useConfirm(
     'Delete project',
@@ -263,7 +264,7 @@ export const EditProjectForm = ({
               size='sm'
               variant='destructive'
               type='button'
-              disabled={isPending}
+              disabled={isPending || isDeletingProject}
               onClick={handleDelete}
             >
               Delete Project
