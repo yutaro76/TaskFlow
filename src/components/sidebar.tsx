@@ -12,9 +12,9 @@ export const Sidebar = () => {
         <Image
           src='/logo.png'
           alt='logo'
-          width={164}
-          height={48}
-          style={{ width: 'auto', height: 'auto' }}
+          width={152}
+          height={56}
+          style={{ width: '100%', height: 'auto' }}
           // コンソールのエラーの解消のため
           priority={true}
         />
