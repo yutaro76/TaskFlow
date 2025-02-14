@@ -242,7 +242,7 @@ export const EditProjectForm = ({
                 >
                   Cancel
                 </Button>
-                <Button type='submit' size-='lg' disabled={isPending}>
+                <Button type='submit' size='lg' disabled={isPending}>
                   Save Changes
                 </Button>
               </div>

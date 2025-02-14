@@ -48,7 +48,7 @@ export const CreateTaskForm = ({
   projectOptions,
   memberOptions,
 }: CreateTaskFormProps) => {
-  const workspaceId = useWorkspaceId() ;
+  const workspaceId = useWorkspaceId();
   const { mutate, isPending } = useCreateTask();
   // フォームのバリデーション
   // z.infer<typeof createWorkspaceSchema>の型を使用する。
@@ -96,7 +96,7 @@ export const CreateTaskForm = ({
                   <FormItem>
                     <FormLabel>Task Name</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder='enter task name' />
+                      <Input {...field} placeholder='Enter task name' />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -11,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import React, { useState } from 'react';
 
 interface DatePickerProps {
   value: Date | undefined;
@@ -21,8 +21,18 @@ interface DatePickerProps {
 
 export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
   ({ value, onChange, className, placeholder = 'Select date' }, ref) => {
+    // trueにすると、リロードが終わった瞬間からカレンダーが表示されている。
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleSelect = (date: Date) => {
+      onChange(date);
+      setIsOpen((prev) => !prev);
+    };
+
     return (
-      <Popover>
+      // openはカレンダーが開いているか閉じているか。
+      // onOpenChangeは日付が選択されたら実行され、setIsOpenに処理がいき、isOpenの状態を変更し、カレンダーの開閉を切り替える。
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
             ref={ref}
@@ -43,7 +53,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
           <Calendar
             mode='single'
             selected={value}
-            onSelect={(date) => onChange(date as Date)}
+            onSelect={(date) => handleSelect(date as Date)}
             // このプロパティを外すことでカレンダーが表示されるようになった。
             // initialFocus
           />
