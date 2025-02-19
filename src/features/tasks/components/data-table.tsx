@@ -24,6 +24,8 @@ import {
 } from '@/components/ui/table';
 
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,6 +54,18 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
+
+  const router = useRouter();
+
+  const workspaceId = useWorkspaceId();
+
+  const onOpenTask = (rowId: string) => {
+    const numericTaskId = parseInt(rowId);
+    // ()の部分で$idを持った配列（リスト）であると宣言。
+    // [numericTaskId]番前の$idを取得する。
+    const taskId = (data as { $id: string }[])?.[numericTaskId]?.$id;
+    router.push(`/workspaces/${workspaceId}/tasks/${taskId}`);
+  };
 
   return (
     <div>
@@ -83,7 +97,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} onClick={() => onOpenTask(row.id)}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
