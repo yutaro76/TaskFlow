@@ -97,7 +97,11 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} onClick={() => onOpenTask(row.id)}>
+                    <TableCell
+                      key={cell.id}
+                      onClick={() => onOpenTask(row.id)}
+                      className='cursor-pointer'
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
