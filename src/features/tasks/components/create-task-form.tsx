@@ -41,25 +41,29 @@ interface CreateTaskFormProps {
   onCancel?: () => void;
   projectOptions: { id: string; name: string; imageUrl: string }[];
   memberOptions: { id: string; name: string }[];
+  defaultDueDate?: Date | null;
 }
 
 export const CreateTaskForm = ({
   onCancel,
   projectOptions,
   memberOptions,
+  defaultDueDate,
 }: CreateTaskFormProps) => {
   const workspaceId = useWorkspaceId();
   const { mutate, isPending } = useCreateTask();
   // フォームのバリデーション
   // z.infer<typeof createWorkspaceSchema>の型を使用する。
   // Zod スキーマから TypeScript の型を推論するために使用される。
+  // console.log(defaultDueDate);
+
   const form = useForm<z.infer<typeof createTaskSchema>>({
     // zodResolver を使用して、Zod スキーマをバリデーションに使用する。
     resolver: zodResolver(createTaskSchema.omit({ workspaceId: true })),
     defaultValues: {
       workspaceId,
       name: '',
-      dueDate: undefined,
+      dueDate: defaultDueDate ?? undefined,
     },
   });
   const onSubmit = (values: z.infer<typeof createTaskSchema>) => {

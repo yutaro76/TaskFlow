@@ -8,10 +8,12 @@ import { AskCreateProjectForm } from '@/features/projects/components/ask-create-
 
 interface CreateTaskFormWrapperProps {
   onCancel: () => void;
+  defaultDueDate?: Date | null;
 }
 
 export const CreateTaskFormWrapper = ({
   onCancel,
+  defaultDueDate,
 }: CreateTaskFormWrapperProps) => {
   const workspaceId = useWorkspaceId();
   const { data: projects, isLoading: isLoadingProjects } = useGetProjects({
@@ -55,6 +57,7 @@ export const CreateTaskFormWrapper = ({
       onCancel={onCancel}
       projectOptions={projectOptions ?? []}
       memberOptions={memberOptions ?? []}
+      defaultDueDate={defaultDueDate}
     />
   );
 };

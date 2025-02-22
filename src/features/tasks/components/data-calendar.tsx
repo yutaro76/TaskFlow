@@ -15,6 +15,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './data-calendar.css';
 import { Button } from '@/components/ui/button';
 import { EventCard } from './event-card';
+import { useCreateTaskModal } from '../hooks/use-create-task-modal';
 
 const locales = {
   'en-US': enUS,
@@ -54,6 +55,25 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
     status: task.status,
     id: task.$id,
   }));
+
+  const { open } = useCreateTaskModal();
+
+  let lastClickTime = 0;
+  const DOUBLE_CLICK_THRESHOLD = 300; // 300ms以内の2回クリックで実行
+
+  // 一回目のクリックでhandleClickを実行し、nowに現在の時間を取得する。
+  // 二回目のクリックでnowとlastClickTimeを比較し、条件を満たせばタブルクリックとみなされる
+  const handleClick = (date: Date) => {
+    const now = Date.now();
+
+    if (now - lastClickTime < DOUBLE_CLICK_THRESHOLD) {
+      open();
+
+      sessionStorage.setItem('defaultDueDate', JSON.stringify(date));
+    }
+
+    lastClickTime = now;
+  };
 
   const handleNavigate = (action: 'PREV' | 'NEXT' | 'TODAY') => {
     if (action === 'PREV') {
@@ -99,11 +119,11 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
       localizer={localizer}
       date={value}
       events={events}
-      views={['month']}
       defaultView='month'
       toolbar
       showAllEvents
       className='h-full'
+      onNavigate={handleClick}
       // 現在の日付から一年後の日付まで選択できるようにする。
       // 年 new Date().getFullYear() + 1：現在の年から1年後の年を取得
       // 日 new Date().setFullYear(new Date().getFullYear() + 1))：今日から1年後の日付を取得
