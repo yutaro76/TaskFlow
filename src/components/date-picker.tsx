@@ -45,8 +45,12 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
               className
             )}
           >
-            <CalendarIcon className='mr-2 h-4 w-4' />
-            {value ? format(value, 'PPP') : <span>{placeholder}</span>}
+            <CalendarIcon className='mr-2 h-4 w-4 opacity-90' stroke='black' />
+            {value ? (
+              format(value, 'PPP')
+            ) : (
+              <span className='text-black opacity-90'>{placeholder}</span>
+            )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className='w-auto p-0'>
