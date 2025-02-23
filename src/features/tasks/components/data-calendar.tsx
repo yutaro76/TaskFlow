@@ -119,6 +119,7 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
       localizer={localizer}
       date={value}
       events={events}
+      views={['month']}
       defaultView='month'
       toolbar
       showAllEvents
