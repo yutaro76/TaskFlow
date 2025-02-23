@@ -16,6 +16,7 @@ import './data-calendar.css';
 import { Button } from '@/components/ui/button';
 import { EventCard } from './event-card';
 import { useCreateTaskModal } from '../hooks/use-create-task-modal';
+import { useProjectId } from '@/features/projects/hooks/use-project-id';
 
 const locales = {
   'en-US': enUS,
@@ -58,6 +59,8 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
 
   const { open } = useCreateTaskModal();
 
+  const projectId = useProjectId();
+
   let lastClickTime = 0;
   const DOUBLE_CLICK_THRESHOLD = 300; // 300ms以内の2回クリックで実行
 
@@ -68,8 +71,8 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
 
     if (now - lastClickTime < DOUBLE_CLICK_THRESHOLD) {
       open();
-
       sessionStorage.setItem('defaultDueDate', JSON.stringify(date));
+      sessionStorage.setItem('defaultProjectId', projectId);
     }
 
     lastClickTime = now;

@@ -42,6 +42,7 @@ interface CreateTaskFormProps {
   projectOptions: { id: string; name: string; imageUrl: string }[];
   memberOptions: { id: string; name: string }[];
   defaultDueDate?: Date | null;
+  defaultProjectId?: string | null;
 }
 
 export const CreateTaskForm = ({
@@ -49,6 +50,7 @@ export const CreateTaskForm = ({
   projectOptions,
   memberOptions,
   defaultDueDate,
+  defaultProjectId,
 }: CreateTaskFormProps) => {
   const workspaceId = useWorkspaceId();
   const { mutate, isPending } = useCreateTask();
@@ -64,6 +66,7 @@ export const CreateTaskForm = ({
       workspaceId,
       name: '',
       dueDate: defaultDueDate ?? undefined,
+      projectId: defaultProjectId ?? undefined,
     },
   });
   const onSubmit = (values: z.infer<typeof createTaskSchema>) => {
@@ -199,7 +202,9 @@ export const CreateTaskForm = ({
                       onValueChange={field.onChange}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger
+                          disabled={typeof defaultProjectId === 'string'}
+                        >
                           <SelectValue placeholder='Select project' />
                         </SelectTrigger>
                       </FormControl>

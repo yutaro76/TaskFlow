@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCreateTaskModal } from '../hooks/use-create-task-modal';
+import { useProjectId } from '@/features/projects/hooks/use-project-id';
 
 interface KanbanColumnHeaderProps {
   board: TaskStatus;
@@ -39,6 +40,10 @@ export const KanbanColumnHeader = ({
   // use-create-task-modal.tsx -> create-task-modal.tsx -> task-view-switcher.tsx
   // ボタンがクリックされるとopenの状態が渡され、モーダルが開く。
   const { open } = useCreateTaskModal();
+  const projectId = useProjectId();
+  const setDefaultProjectId = () => {
+    sessionStorage.setItem('defaultProjectId', projectId);
+  };
 
   // ステータスに合うアイコンを取得
   const icon = statusIconMap[board];
@@ -54,7 +59,10 @@ export const KanbanColumnHeader = ({
         </div>
       </div>
       <Button
-        onClick={() => open()}
+        onClick={() => {
+          open();
+          setDefaultProjectId();
+        }}
         variant='ghost'
         size='icon'
         className='size-5'

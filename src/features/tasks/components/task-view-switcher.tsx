@@ -54,6 +54,10 @@ export const TaskViewSwitcher = ({
     [bulkUpdate]
   );
 
+  const setDefaultProjectId = () => {
+    sessionStorage.setItem('defaultProjectId', paramProjectId);
+  };
+
   return (
     // flex-1 中の要素が均等に横幅を占有する。中の長さは文字の長さによって変わる。
     <Tabs
@@ -76,7 +80,14 @@ export const TaskViewSwitcher = ({
               Calendar
             </TabsTrigger>
           </TabsList>
-          <Button size='sm' className='w-full lg:w-auto' onClick={() => open()}>
+          <Button
+            size='sm'
+            className='w-full lg:w-auto'
+            onClick={() => {
+              setDefaultProjectId();
+              open();
+            }}
+          >
             <PlusIcon className='size-4 mr-2' />
             New
           </Button>

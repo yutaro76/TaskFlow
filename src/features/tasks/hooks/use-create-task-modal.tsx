@@ -22,12 +22,14 @@ export const useCreateTaskModal = () => {
   const close = () => {
     setIsOpen(false);
     sessionStorage.removeItem('defaultDueDate');
+    sessionStorage.removeItem('defaultProjectId');
   };
 
   // isOpenがfalseになったらsessionStorageをクリア
   useEffect(() => {
     if (!isOpen) {
       sessionStorage.removeItem('defaultDueDate');
+      sessionStorage.removeItem('defaultProjectId');
     }
   }, [isOpen]);
 
