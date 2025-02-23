@@ -128,9 +128,11 @@ export const columns: ColumnDef<Task>[] = [
 
       return (
         <TaskActions id={id} projectId={projectId}>
-          <Button variant='ghost' className='size-8 p-0'>
-            <MoreVertical className='size-4' />
-          </Button>
+          <div onClick={(e) => e.stopPropagation()}>
+            <Button variant='ghost' className='size-8 p-0'>
+              <MoreVertical className='size-4' />
+            </Button>
+          </div>
         </TaskActions>
       );
     },
