@@ -83,7 +83,6 @@ export const CreateTaskForm = ({
       }
     );
   };
-
   return (
     <Card className='w-full h-full border-none shadow-none'>
       <CardHeader className='flex p-7'>
@@ -101,7 +100,12 @@ export const CreateTaskForm = ({
                 name='name'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Task Name</FormLabel>
+                    <div className='flex items-center justify-start'>
+                      <FormLabel>Task Name</FormLabel>
+                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
+                        Required
+                      </span>
+                    </div>
                     <FormControl>
                       <Input {...field} placeholder='Enter task name' />
                     </FormControl>
@@ -114,7 +118,12 @@ export const CreateTaskForm = ({
                 name='dueDate'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Due Date</FormLabel>
+                    <div className='flex items-center justify-start'>
+                      <FormLabel>Due Date</FormLabel>
+                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
+                        Required
+                      </span>
+                    </div>
                     <FormControl>
                       {/* filedに選択した日付が表示される */}
                       <DatePicker {...field} />
@@ -128,7 +137,12 @@ export const CreateTaskForm = ({
                 name='assigneeId'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Assignee</FormLabel>
+                    <div className='flex items-center justify-start'>
+                      <FormLabel>Assignee</FormLabel>
+                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
+                        Required
+                      </span>
+                    </div>
                     <Select
                       defaultValue={field.value}
                       // onChangeはフィールドの値が変更されたときに呼び出される。
@@ -162,7 +176,12 @@ export const CreateTaskForm = ({
                 name='status'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status</FormLabel>
+                    <div className='flex items-center justify-start'>
+                      <FormLabel>Status</FormLabel>
+                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
+                        Required
+                      </span>
+                    </div>
                     <Select
                       defaultValue={field.value}
                       onValueChange={field.onChange}
@@ -195,7 +214,12 @@ export const CreateTaskForm = ({
                 name='projectId'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Project</FormLabel>
+                    <div className='flex items-center justify-start'>
+                      <FormLabel>Project</FormLabel>
+                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
+                        Required
+                      </span>
+                    </div>
                     <Select
                       defaultValue={field.value}
                       // onChangeはフィールドの値が変更されたときに呼び出される。
