@@ -34,6 +34,8 @@ import {
 import { MemberAvatar } from '@/features/members/components/member-avatar';
 import { TaskStatus } from '../types';
 import { ProjectAvatar } from '@/features/projects/components/project-avatar';
+import { useGetProjects } from '@/features/projects/api/use-get-projects';
+import { useMemo } from 'react';
 
 interface CreateTaskFormProps {
   // onCancel プロパティを使用することで、キャンセルボタンがクリックされたときに特定の処理を実行できるようになる。
@@ -58,6 +60,14 @@ export const CreateTaskForm = ({
   // z.infer<typeof createWorkspaceSchema>の型を使用する。
   // Zod スキーマから TypeScript の型を推論するために使用される。
   // console.log(defaultDueDate);
+  const projects = useGetProjects({ workspaceId });
+
+  const initialProjectId = useMemo(() => {
+    if (!defaultProjectId && projects.data?.total === 1) {
+      return projects.data.documents[0].$id;
+    }
+    return defaultProjectId ?? undefined;
+  }, [projects, defaultProjectId]);
 
   const form = useForm<z.infer<typeof createTaskSchema>>({
     // zodResolver を使用して、Zod スキーマをバリデーションに使用する。
@@ -66,7 +76,8 @@ export const CreateTaskForm = ({
       workspaceId,
       name: '',
       dueDate: defaultDueDate ?? undefined,
-      projectId: defaultProjectId ?? undefined,
+      projectId: initialProjectId,
+      assigneeId: memberOptions.length === 1 ? memberOptions[0].id : undefined,
     },
   });
   const onSubmit = (values: z.infer<typeof createTaskSchema>) => {
