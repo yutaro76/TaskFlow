@@ -34,10 +34,12 @@ export const EventCard = ({
   const workspaceId = useWorkspaceId();
   const router = useRouter();
 
-  const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const onClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    sessionStorage.setItem('delayedTaskLog', 'false');
     // イベントが親要素に伝播するのを防ぐ。
     e.stopPropagation();
-    router.push(`/workspaces/${workspaceId}/tasks/${id}`);
+    await router.push(`/workspaces/${workspaceId}/tasks/${id}`);
+    sessionStorage.removeItem('delayedTaskLog');
   };
 
   return (

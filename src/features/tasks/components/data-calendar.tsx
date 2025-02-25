@@ -58,24 +58,20 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
   }));
 
   const { open } = useCreateTaskModal();
-
   const projectId = useProjectId();
+  sessionStorage.setItem('delayedTaskLog', 'true');
 
-  let lastClickTime = 0;
-  const DOUBLE_CLICK_THRESHOLD = 300; // 300ms以内の2回クリックで実行
-
+  // ワンクリックに変更のためダブルクリックの処理はコメントアウト
+  // let lastClickTime = 0;
+  // const DOUBLE_CLICK_THRESHOLD = 300; // 300ms以内の2回クリックで実行
   // 一回目のクリックでhandleClickを実行し、nowに現在の時間を取得する。
   // 二回目のクリックでnowとlastClickTimeを比較し、条件を満たせばタブルクリックとみなされる
   const handleClick = (date: Date) => {
-    const now = Date.now();
-
-    if (now - lastClickTime < DOUBLE_CLICK_THRESHOLD) {
+    if (sessionStorage.getItem('delayedTaskLog') === 'true') {
       open();
-      sessionStorage.setItem('defaultDueDate', JSON.stringify(date));
-      sessionStorage.setItem('defaultProjectId', projectId);
     }
-
-    lastClickTime = now;
+    sessionStorage.setItem('defaultDueDate', JSON.stringify(date));
+    sessionStorage.setItem('defaultProjectId', projectId);
   };
 
   const handleNavigate = (action: 'PREV' | 'NEXT' | 'TODAY') => {
@@ -126,8 +122,14 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
       defaultView='month'
       toolbar
       showAllEvents
-      className='h-full'
+      className='h-full cursor-pointer'
+      selectable
+      // 月名や日づけの部分を指すプロパティ
       onNavigate={handleClick}
+      // startはbig-calendarの予約語で、クリックした部分の最初の日をさす。
+      // 一つのタスクが複数にまたがるようなアプリでは最初の日を取得する。
+      // onSelectSlotはプロパティで、カレンダーの空白部分をクリックした時に実行される。
+      onSelectSlot={({ start }) => handleClick(start)}
       // 現在の日付から一年後の日付まで選択できるようにする。
       // 年 new Date().getFullYear() + 1：現在の年から1年後の年を取得
       // 日 new Date().setFullYear(new Date().getFullYear() + 1))：今日から1年後の日付を取得
