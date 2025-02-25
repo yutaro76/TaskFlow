@@ -111,12 +111,9 @@ export const CreateTaskForm = ({
                 name='name'
                 render={({ field }) => (
                   <FormItem>
-                    <div className='flex items-center justify-start'>
-                      <FormLabel>Task Name</FormLabel>
-                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
-                        Required
-                      </span>
-                    </div>
+                    <FormLabel>
+                      Task Name <span className='text-red-600'> *</span>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder='Enter task name' />
                     </FormControl>
@@ -129,12 +126,9 @@ export const CreateTaskForm = ({
                 name='dueDate'
                 render={({ field }) => (
                   <FormItem>
-                    <div className='flex items-center justify-start'>
-                      <FormLabel>Due Date</FormLabel>
-                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
-                        Required
-                      </span>
-                    </div>
+                    <FormLabel>
+                      Due Date<span className='text-red-600'> *</span>
+                    </FormLabel>
                     <FormControl>
                       {/* filedに選択した日付が表示される */}
                       <DatePicker {...field} />
@@ -148,12 +142,9 @@ export const CreateTaskForm = ({
                 name='assigneeId'
                 render={({ field }) => (
                   <FormItem>
-                    <div className='flex items-center justify-start'>
-                      <FormLabel>Assignee</FormLabel>
-                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
-                        Required
-                      </span>
-                    </div>
+                    <FormLabel>
+                      Assignee<span className='text-red-600'> *</span>
+                    </FormLabel>
                     <Select
                       defaultValue={field.value}
                       // onChangeはフィールドの値が変更されたときに呼び出される。
@@ -187,12 +178,9 @@ export const CreateTaskForm = ({
                 name='status'
                 render={({ field }) => (
                   <FormItem>
-                    <div className='flex items-center justify-start'>
-                      <FormLabel>Status</FormLabel>
-                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
-                        Required
-                      </span>
-                    </div>
+                    <FormLabel>
+                      Status <span className='text-red-600'> *</span>
+                    </FormLabel>
                     <Select
                       defaultValue={field.value}
                       onValueChange={field.onChange}
@@ -225,12 +213,9 @@ export const CreateTaskForm = ({
                 name='projectId'
                 render={({ field }) => (
                   <FormItem>
-                    <div className='flex items-center justify-start'>
-                      <FormLabel>Project</FormLabel>
-                      <span className='bg-orange-400 text-white text-xs font-bold ml-2 px-2 py-1 rounded-full inline-block'>
-                        Required
-                      </span>
-                    </div>
+                    <FormLabel>
+                      Project <span className='text-red-600'> *</span>
+                    </FormLabel>
                     <Select
                       defaultValue={field.value}
                       // onChangeはフィールドの値が変更されたときに呼び出される。
