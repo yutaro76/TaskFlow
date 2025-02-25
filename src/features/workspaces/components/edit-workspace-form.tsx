@@ -3,12 +3,7 @@ import { updateWorkspaceSchema } from '@/features/workspaces/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '../../../components/ui/card';
+import { Card, CardContent } from '../../../components/ui/card';
 import { DottedSeparator } from '../../../components/dotted-separator';
 import {
   Form,
@@ -21,10 +16,9 @@ import {
 import { Input } from '../../../components/ui/input';
 import { Button } from '../../../components/ui/button';
 import { useRef } from 'react';
-import { ArrowLeftIcon, CopyIcon, ImageIcon } from 'lucide-react';
+import { CopyIcon, ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Workspace } from '../types';
 import { useUpdateWorkspace } from '../api/use-update-workspace';
@@ -44,7 +38,7 @@ export const EditWorkspaceForm = ({
   onCancel,
   initialValues,
 }: EditWorkspaceFormProps) => {
-  const router = useRouter();
+  // const router = useRouter();
   const { mutate, isPending } = useUpdateWorkspace();
   const { mutate: resetInviteCode, isPending: isResettingInviteCode } =
     useResetInviteCode();
@@ -139,27 +133,27 @@ export const EditWorkspaceForm = ({
     <div className='flex flex-col gap-y-4'>
       <DeleteDialog />
       <Card className='w-full h-full border-none shadow-none'>
-        <CardHeader className='flex flex-row items-center gap-x-4 p-7 space-y-0'>
-          <CardTitle className='text-xl font-bold'>
-            <Button
-              size='sm'
-              variant='secondary'
-              onClick={
-                // onCancelが渡されている場合、キャンセルボタンがクリックされたときにonCancelを実行する。
-                // onCancelは通常のフローでsettingsをクリックして遷移してきたときに渡されるようになっている。
-                onCancel
-                  ? onCancel
-                  : () => router.push(`/workspaces/${initialValues.$id}`)
-              }
-            >
-              <ArrowLeftIcon className='size-4 mr-2' />
-              {initialValues.name}
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <div className='px-7'>
-          <DottedSeparator />
-        </div>
+        {/* <CardHeader className='flex flex-row items-center gap-x-4 p-7 space-y-0'> */}
+        {/* <CardTitle className='text-xl font-bold'> */}
+        {/* <Button */}
+        {/* size='sm' */}
+        {/* variant='secondary' */}
+        {/* onClick={ */}
+        {/* // onCancelが渡されている場合、キャンセルボタンがクリックされたときにonCancelを実行する。 */}
+        {/* // onCancelは通常のフローでsettingsをクリックして遷移してきたときに渡されるようになっている。 */}
+        {/* onCancel */}
+        {/* ? onCancel */}
+        {/* : () => router.push(`/workspaces/${initialValues.$id}`) */}
+        {/* } */}
+        {/* > */}
+        {/* <ArrowLeftIcon className='size-4 mr-2' /> */}
+        {/* {initialValues.name} */}
+        {/* </Button> */}
+        {/* </CardTitle> */}
+        {/* </CardHeader> */}
+        {/* <div className='px-7'> */}
+        {/* <DottedSeparator /> */}
+        {/* </div> */}
         <CardContent className='p-7'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>

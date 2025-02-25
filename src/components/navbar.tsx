@@ -10,7 +10,15 @@ const pathnameMap = {
   },
   projects: {
     title: 'My Project',
-    description: 'This is the detail of a project.',
+    description: 'These are the details of this project.',
+  },
+  settings: {
+    title: 'My Settings',
+    description: 'These are the settings of this workspace.',
+  },
+  members: {
+    title: 'My Members',
+    description: 'This is the member list for this workspace.',
   },
 };
 

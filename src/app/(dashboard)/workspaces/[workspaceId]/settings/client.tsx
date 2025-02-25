@@ -19,7 +19,7 @@ export const WorkspaceIdSettingsClient = () => {
   }
 
   return (
-    <div className='w-full lg:max-w-xl'>
+    <div className='w-full lg:max-w-xl lg:mx-auto'>
       <EditWorkspaceForm initialValues={initialValues} />
     </div>
   );

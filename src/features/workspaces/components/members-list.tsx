@@ -6,11 +6,9 @@ import { useGetMembers } from '@/features/members/api/use-get-members';
 import { useDeleteMember } from '@/features/members/api/use-delete-member';
 import { useUpdateMember } from '@/features/members/api/use-update-member';
 import { MemberRole } from '@/features/members/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { ArrowLeftIcon, MoreVerticalIcon } from 'lucide-react';
-import { DottedSeparator } from '@/components/dotted-separator';
+import { MoreVerticalIcon } from 'lucide-react';
 import { Fragment } from 'react';
 import { MemberAvatar } from '@/features/members/components/member-avatar';
 import {
@@ -65,19 +63,19 @@ export const MembersList = () => {
   return (
     <Card className='w-full h-full border-none shadow-none'>
       <ConfirmDialog />
-      <CardHeader className='flex flex-row items-center gap-x-4 space-y-0'>
-        {/* asChildで子要素をレンダリングできるようにする。 */}
-        <Button asChild variant='secondary' size='sm'>
-          <Link href={`/workspaces/${workspaceId}`}>
-            <ArrowLeftIcon className='size-4 mr-2' />
-            Back
-          </Link>
-        </Button>
-        <CardTitle className='text-xl font-bold'>Members List</CardTitle>
-      </CardHeader>
-      <div className='px-7'>
-        <DottedSeparator />
-      </div>
+      {/* <CardHeader className='flex flex-row items-center gap-x-4 space-y-0'> */}
+      {/* asChildで子要素をレンダリングできるようにする。 */}
+      {/* <Button asChild variant='secondary' size='sm'> */}
+      {/* <Link href={`/workspaces/${workspaceId}`}> */}
+      {/* <ArrowLeftIcon className='size-4 mr-2' /> */}
+      {/* Back */}
+      {/* </Link> */}
+      {/* </Button> */}
+      {/* <CardTitle className='text-xl font-bold'>Members List</CardTitle> */}
+      {/* </CardHeader> */}
+      {/* <div className='px-7'> */}
+      {/* <DottedSeparator /> */}
+      {/* </div> */}
       <CardContent className='p-7'>
         {data?.documents.map((member, index) => (
           <Fragment key={member.$id}>
