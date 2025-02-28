@@ -5,6 +5,8 @@ import { CreateProjectModal } from '@/features/projects/components/create-projec
 import { CreateWorkspaceModal } from '@/features/workspaces/components/create-workspace-modal';
 import { CreateTaskModal } from '@/features/tasks/components/create-task-modal';
 import { EditTaskModal } from '@/features/tasks/components/edit-task-modal';
+import { useEffect } from 'react';
+import { redirect, usePathname } from 'next/navigation';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -23,6 +25,41 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   //   return () => clearTimeout(timer); // クリーンアップ
   // }, []);
+
+  const pathname = usePathname();
+  const pathnameParts = pathname.split('/');
+
+  // workspaceId
+  const workspaceId = pathnameParts[2];
+  // tasks, settings, members, projects
+  const pathnameKey = pathnameParts[3];
+
+  useEffect(() => {
+    const savedWorkspaceId = localStorage.getItem('workspaceId');
+    const lastPage = localStorage.getItem('myTasksView');
+    if (
+      workspaceId !== savedWorkspaceId &&
+      pathnameKey != 'tasks' &&
+      lastPage != null
+    ) {
+      localStorage.removeItem('myTasksView');
+      localStorage.removeItem('workspaceId');
+      redirect(`/workspaces/${savedWorkspaceId}/tasks?task-view=${lastPage}`);
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    if (
+      pathnameKey === 'settings' ||
+      pathnameKey === 'members' ||
+      pathnameKey === undefined
+    ) {
+      localStorage.removeItem('myTasksView');
+      localStorage.removeItem('workspaceId');
+    }
+  }, [pathnameKey]);
+
   return (
     <div className='min-h-screen'>
       <CreateWorkspaceModal />

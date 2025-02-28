@@ -1,7 +1,7 @@
 'use client';
 import { UserButton } from '@/features/auth/components/user-button';
 import { MobileSidebar } from './mobile-sidebar';
-import { redirect, usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 const pathnameMap = {
@@ -39,6 +39,9 @@ export const Navbar = () => {
 
   const { title, description } = pathnameMap[pathnameKey] || defaultMap;
 
+  // workspaceId
+  const workspaceId = pathnameParts[2] as keyof typeof pathnameMap;
+
   // taskViewでtask-viewの後のkanbanなどを取得。ないときはnull。
   const searchParams = useSearchParams();
   const taskView = searchParams.get('task-view');
@@ -46,34 +49,19 @@ export const Navbar = () => {
   useEffect(() => {
     if (pathnameKey === 'tasks' && taskView == 'table') {
       localStorage.setItem('myTasksView', 'table');
+      localStorage.setItem('workspaceId', workspaceId);
     } else if (pathnameKey === 'tasks' && taskView == 'kanban') {
       localStorage.setItem('myTasksView', 'kanban');
+      localStorage.setItem('workspaceId', workspaceId);
     } else if (pathnameKey === 'tasks' && taskView == 'calendar') {
       localStorage.setItem('myTasksView', 'calendar');
+      localStorage.setItem('workspaceId', workspaceId);
     } else if (pathnameKey === 'tasks' && taskView == null) {
       localStorage.setItem('myTasksView', 'table');
-    }
-
-    if (
-      pathnameKey === 'settings' ||
-      pathnameKey === 'members' ||
-      pathnameKey === undefined
-    ) {
-      localStorage.removeItem('myTasksView');
-    }
-  }, [pathnameKey, taskView]);
-
-  // workspaceId
-  const workspaceId = pathnameParts[2] as keyof typeof pathnameMap;
-
-  useEffect(() => {
-    const lastPage = localStorage.getItem('myTasksView');
-    if (pathnameKey != 'tasks' && lastPage != null) {
-      localStorage.removeItem('myTasksView');
-      redirect(`/workspaces/${workspaceId}/tasks?task-view=${lastPage}`);
+      localStorage.setItem('workspaceId', workspaceId);
     }
     // eslint-disable-next-line
-  }, []);
+  }, [pathnameKey, taskView]);
 
   return (
     <nav className='pt-4 px-6 flex items-center justify-between'>
