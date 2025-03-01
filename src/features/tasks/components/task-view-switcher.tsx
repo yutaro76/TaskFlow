@@ -13,11 +13,12 @@ import { useTaskFilters } from '../hooks/use-task-filters';
 import { DataTable } from './data-table';
 import { columns } from './columns';
 import { DataKanban } from './data-kanban';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { TaskStatus } from '../types';
 import { useBulkUpdateTasks } from '../api/use-bulk-update-tasks';
 import { DataCalendar } from './data-calendar';
 import { useProjectId } from '@/features/projects/hooks/use-project-id';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 interface TaskViewSwitcherProps {
   hideProjectFilter?: boolean;
@@ -26,9 +27,20 @@ interface TaskViewSwitcherProps {
 export const TaskViewSwitcher = ({
   hideProjectFilter,
 }: TaskViewSwitcherProps) => {
+  // pathnameで/workspaces/67b41e4e000ca3be3b72/tasksを取得。
+  const pathname = usePathname();
+  const pathnameParts = pathname.split('/');
+
+  // tasks, settings, members, projectsのいずれかを取得。
+  const pathnameKey = pathnameParts[3];
+
   // URLの最後に?task-view=tableのようにタブごとに違うURLを作成する。
   const [view, setView] = useQueryState('task-view', {
-    defaultValue: 'table',
+    defaultValue:
+      // クライアントサイドでのみlocalStorageが使えるので、typeof window !== 'undefined'で条件分岐している。
+      typeof window !== 'undefined' && pathnameKey !== 'projects'
+        ? localStorage.getItem('MyTaskView') || 'table'
+        : 'table',
   });
   // useGetTasksでstatusなどが使えるように型を定義している。
   const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
@@ -57,6 +69,32 @@ export const TaskViewSwitcher = ({
   const setDefaultProjectId = () => {
     sessionStorage.setItem('defaultProjectId', paramProjectId);
   };
+
+  // taskViewでtask-viewの後のkanbanなどを取得。ないときはnull。
+  const searchParams = useSearchParams();
+
+  const taskView = searchParams.get('task-view') || 'table';
+
+  // タブが切り替わるたびにその値をlocalStorageに保存する。
+  useEffect(() => {
+    if (pathnameKey === 'tasks' && view) {
+      localStorage.setItem('MyTaskView', view);
+      localStorage.setItem('WorkspaceId', workspaceId);
+    }
+    // eslint-disable-next-line
+  }, [view]);
+
+  // tasksが読み込まれた際に、保存していたタブのページを表示する。
+  useEffect(() => {
+    if (pathnameKey === 'tasks') {
+      const savedTaskTab = localStorage.getItem('MyTaskView') || 'table';
+      setView(savedTaskTab);
+    }
+    if (pathnameKey === 'tasks') {
+      localStorage.setItem('MyTaskView', taskView);
+    }
+    // eslint-disable-next-line
+  }, [pathnameKey, setView]);
 
   return (
     // flex-1 中の要素が均等に横幅を占有する。中の長さは文字の長さによって変わる。
