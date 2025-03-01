@@ -1,8 +1,7 @@
 'use client';
 import { UserButton } from '@/features/auth/components/user-button';
 import { MobileSidebar } from './mobile-sidebar';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 const pathnameMap = {
   tasks: {
@@ -38,30 +37,6 @@ export const Navbar = () => {
   const pathnameKey = pathnameParts[3] as keyof typeof pathnameMap;
 
   const { title, description } = pathnameMap[pathnameKey] || defaultMap;
-
-  // workspaceId
-  const workspaceId = pathnameParts[2] as keyof typeof pathnameMap;
-
-  // taskViewでtask-viewの後のkanbanなどを取得。ないときはnull。
-  const searchParams = useSearchParams();
-  const taskView = searchParams.get('task-view');
-  // pathnameで/workspaces/67b41e4e000ca3be3b72/tasks、taskViewでkanbanを取得。
-  useEffect(() => {
-    if (pathnameKey === 'tasks' && taskView == 'table') {
-      localStorage.setItem('myTasksView', 'table');
-      localStorage.setItem('workspaceId', workspaceId);
-    } else if (pathnameKey === 'tasks' && taskView == 'kanban') {
-      localStorage.setItem('myTasksView', 'kanban');
-      localStorage.setItem('workspaceId', workspaceId);
-    } else if (pathnameKey === 'tasks' && taskView == 'calendar') {
-      localStorage.setItem('myTasksView', 'calendar');
-      localStorage.setItem('workspaceId', workspaceId);
-    } else if (pathnameKey === 'tasks' && taskView == null) {
-      localStorage.setItem('myTasksView', 'table');
-      localStorage.setItem('workspaceId', workspaceId);
-    }
-    // eslint-disable-next-line
-  }, [pathnameKey, taskView]);
 
   return (
     <nav className='pt-4 px-6 flex items-center justify-between'>

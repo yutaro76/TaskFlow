@@ -23,9 +23,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   // use-workspace-id.tsのuseParams()が早く実行されすぎてコンソールにエラーが出るのを防ぐため。
   //   }, 500);
 
-  //   return () => clearTimeout(timer); // クリーンアップ
-  // }, []);
-
   const pathname = usePathname();
   const pathnameParts = pathname.split('/');
 
@@ -35,30 +32,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathnameKey = pathnameParts[3];
 
   useEffect(() => {
-    const savedWorkspaceId = localStorage.getItem('workspaceId');
-    const lastPage = localStorage.getItem('myTasksView');
+    const savedWorkspaceId = localStorage.getItem('WorkspaceId');
+    const lastPage = localStorage.getItem('MyTaskView');
     if (
       workspaceId !== savedWorkspaceId &&
       pathnameKey != 'tasks' &&
       lastPage != null
     ) {
-      localStorage.removeItem('myTasksView');
-      localStorage.removeItem('workspaceId');
       redirect(`/workspaces/${savedWorkspaceId}/tasks?task-view=${lastPage}`);
     }
     // eslint-disable-next-line
   }, []);
-
-  useEffect(() => {
-    if (
-      pathnameKey === 'settings' ||
-      pathnameKey === 'members' ||
-      pathnameKey === undefined
-    ) {
-      localStorage.removeItem('myTasksView');
-      localStorage.removeItem('workspaceId');
-    }
-  }, [pathnameKey]);
 
   return (
     <div className='min-h-screen'>
