@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader, LogOut } from 'lucide-react';
+import { Loader, LogOut, SmilePlus } from 'lucide-react';
 import { useCurrent } from '../api/use-current';
 import { useLogout } from '../api/use-logout';
 import {
@@ -11,8 +11,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DottedSeparator } from '@/components/dotted-separator';
+import { Button } from '@/components/ui/button';
+import { useCreateAvatarModal } from '@/features/members/hooks/use-create-avatar-modal';
 
 export const UserButton = () => {
+  const { open } = useCreateAvatarModal();
   const { data: user, isLoading } = useCurrent();
   // useLogout内の処理をまとめてmutateと名前をつけて、ここではlogout()として使えるようにする
   const { mutate: logout } = useLogout();
@@ -73,6 +76,20 @@ export const UserButton = () => {
             </p>
             <p className='text-xs text-neutral-500'>{email}</p>
           </div>
+        </div>
+        {/* アイコン変更用のボタン */}
+        <div className='flex flex-col items-center justify-center mb-4'>
+          <Button
+            size='sm'
+            variant='outline'
+            className='w-5/6 h-8 font-medium'
+            onClick={() => {
+              open();
+            }}
+          >
+            <SmilePlus className='size-4 mr-2' />
+            Change Avatar
+          </Button>
         </div>
         <DottedSeparator className='mb-1' />
         {/* ログアウト */}
