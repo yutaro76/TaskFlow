@@ -33,13 +33,13 @@ import { useDeleteProject } from '@/features/projects/api/use-delete-project';
 import { useGetProject } from '@/features/projects/api/use-get-project';
 import { useProjectId } from '@/features/projects/hooks/use-project-id';
 
-interface CreateAvatarFormProps {
+interface CreateFaceFormProps {
   // onCancel プロパティを使用することで、キャンセルボタンがクリックされたときに特定の処理を実行できるようになる。
   // どのタイミングでモーダルがクリックされてモーダルが閉じられるかを明記するために予め型を定義しておく。
   onCancel?: () => void;
 }
 
-export const CreateAvatarForm = ({ onCancel }: CreateAvatarFormProps) => {
+export const CreateFaceForm = ({ onCancel }: CreateFaceFormProps) => {
   const projectId = useProjectId();
   const { data } = useGetProject({ projectId });
   const initialValues = data as Project;

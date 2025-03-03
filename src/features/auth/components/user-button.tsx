@@ -12,10 +12,10 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DottedSeparator } from '@/components/dotted-separator';
 import { Button } from '@/components/ui/button';
-import { useCreateAvatarModal } from '@/features/members/hooks/use-create-avatar-modal';
+import { useCreateFaceModal } from '@/features/members/hooks/use-create-face-modal';
 
 export const UserButton = () => {
-  const { open } = useCreateAvatarModal();
+  const { open } = useCreateFaceModal();
   const { data: user, isLoading } = useCurrent();
   // useLogout内の処理をまとめてmutateと名前をつけて、ここではlogout()として使えるようにする
   const { mutate: logout } = useLogout();

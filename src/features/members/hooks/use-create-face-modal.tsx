@@ -1,6 +1,6 @@
 import { parseAsBoolean, useQueryState } from 'nuqs';
 
-export const useCreateAvatarModal = () => {
+export const useCreateFaceModal = () => {
   const [isOpen, setIsOpen] = useQueryState(
     'create-avatar',
     parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: true })

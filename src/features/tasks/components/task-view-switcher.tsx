@@ -38,8 +38,16 @@ export const TaskViewSwitcher = ({
   const [view, setView] = useQueryState('task-view', {
     defaultValue:
       // クライアントサイドでのみlocalStorageが使えるので、typeof window !== 'undefined'で条件分岐している。
-      typeof window !== 'undefined' && pathnameKey !== 'projects'
-        ? localStorage.getItem('MyTaskView') || 'table'
+      typeof window !== 'undefined'
+        ? (() => {
+            if (pathnameKey === 'tasks') {
+              return localStorage.getItem('MyTaskView') || 'table';
+            } else if (pathnameKey === 'projects') {
+              return localStorage.getItem('ProjectTaskView') || 'table';
+            } else {
+              return 'table';
+            }
+          })()
         : 'table',
   });
   // useGetTasksでstatusなどが使えるように型を定義している。
@@ -75,26 +83,39 @@ export const TaskViewSwitcher = ({
 
   const taskView = searchParams.get('task-view') || 'table';
 
+  // ページが読み込まれた際に、tasksまたはprojectsであれば、そのタブの値をlocalStorageに保存する。
+  useEffect(() => {
+    if (!searchParams.has('task-view')) return;
+    if (pathnameKey === 'tasks') {
+      localStorage.setItem('MyTaskView', taskView);
+    } else if (pathnameKey === 'projects') {
+      localStorage.setItem('ProjectTaskView', taskView);
+    }
+  }, [pathnameKey, searchParams, taskView]);
+
+  // ページが読み込まれる際に、保存していたタブのページを表示する。
+  useEffect(() => {
+    if (pathnameKey === 'tasks') {
+      const savedTaskTab = localStorage.getItem('MyTaskView') || 'table';
+      setView(savedTaskTab);
+    } else if (pathnameKey === 'projects') {
+      const savedProjectTaskTab =
+        localStorage.getItem('ProjectTaskView') || 'table';
+      setView(savedProjectTaskTab);
+    }
+    // eslint-disable-next-line
+  }, [pathnameKey, setView]);
+
   // タブが切り替わるたびにその値をlocalStorageに保存する。
   useEffect(() => {
     if (pathnameKey === 'tasks' && view) {
       localStorage.setItem('MyTaskView', view);
       localStorage.setItem('WorkspaceId', workspaceId);
+    } else if (pathnameKey === 'projects' && view) {
+      localStorage.setItem('ProjectTaskView', view);
     }
     // eslint-disable-next-line
   }, [view]);
-
-  // tasksが読み込まれた際に、保存していたタブのページを表示する。
-  useEffect(() => {
-    if (pathnameKey === 'tasks') {
-      const savedTaskTab = localStorage.getItem('MyTaskView') || 'table';
-      setView(savedTaskTab);
-    }
-    if (pathnameKey === 'tasks') {
-      localStorage.setItem('MyTaskView', taskView);
-    }
-    // eslint-disable-next-line
-  }, [pathnameKey, setView]);
 
   return (
     // flex-1 中の要素が均等に横幅を占有する。中の長さは文字の長さによって変わる。

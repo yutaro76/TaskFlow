@@ -2,7 +2,7 @@
 import { UserButton } from '@/features/auth/components/user-button';
 import { MobileSidebar } from './mobile-sidebar';
 import { usePathname } from 'next/navigation';
-import { CreateAvatarModal } from '@/features/members/components/create-avatar-modal';
+import { CreateFacerModal } from '@/features/members/components/create-face-modal';
 
 const pathnameMap = {
   tasks: {
@@ -46,7 +46,7 @@ export const Navbar = () => {
         <p className='text-muted-foreground'>{description}</p>
       </div>
       <MobileSidebar />
-      <CreateAvatarModal />
+      <CreateFacerModal />
       <UserButton />
     </nav>
   );

@@ -1,14 +1,14 @@
-import { CreateAvatarForm } from './create-avatar-form';
+import { CreateFaceForm } from './create-face-form';
 
 interface CreateTaskFormWrapperProps {
   onCancel: () => void;
 }
 
-export const CreateAvatarFormWrapper = ({
+export const CreateFaceFormWrapper = ({
   onCancel,
 }: CreateTaskFormWrapperProps) => {
   // アバターを取得するためのカスタムフック
   // アバターを取得中のLoadingの表示
 
-  return <CreateAvatarForm onCancel={onCancel} />;
+  return <CreateFaceForm onCancel={onCancel} />;
 };
