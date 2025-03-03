@@ -33,6 +33,8 @@ export const TaskViewSwitcher = ({
 
   // tasks, settings, members, projectsのいずれかを取得。
   const pathnameKey = pathnameParts[3];
+  const workspaceId = useWorkspaceId();
+  const paramProjectId = useProjectId();
 
   // URLの最後に?task-view=tableのようにタブごとに違うURLを作成する。
   const [view, setView] = useQueryState('task-view', {
@@ -42,8 +44,11 @@ export const TaskViewSwitcher = ({
         ? (() => {
             if (pathnameKey === 'tasks') {
               return localStorage.getItem('MyTaskView') || 'table';
-            } else if (pathnameKey === 'projects') {
-              return localStorage.getItem('ProjectTaskView') || 'table';
+            } else if (
+              pathnameKey === 'projects' &&
+              localStorage.getItem(paramProjectId)
+            ) {
+              return localStorage.getItem(paramProjectId) || 'table';
             } else {
               return 'table';
             }
@@ -52,8 +57,6 @@ export const TaskViewSwitcher = ({
   });
   // useGetTasksでstatusなどが使えるように型を定義している。
   const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
-  const paramProjectId = useProjectId();
-  const workspaceId = useWorkspaceId();
   const { open } = useCreateTaskModal();
   const { mutate: bulkUpdate } = useBulkUpdateTasks();
 
@@ -89,8 +92,9 @@ export const TaskViewSwitcher = ({
     if (pathnameKey === 'tasks') {
       localStorage.setItem('MyTaskView', taskView);
     } else if (pathnameKey === 'projects') {
-      localStorage.setItem('ProjectTaskView', taskView);
+      localStorage.setItem(paramProjectId, taskView);
     }
+    // eslint-disable-next-line
   }, [pathnameKey, searchParams, taskView]);
 
   // ページが読み込まれる際に、保存していたタブのページを表示する。
@@ -100,7 +104,7 @@ export const TaskViewSwitcher = ({
       setView(savedTaskTab);
     } else if (pathnameKey === 'projects') {
       const savedProjectTaskTab =
-        localStorage.getItem('ProjectTaskView') || 'table';
+        localStorage.getItem(paramProjectId) || 'table';
       setView(savedProjectTaskTab);
     }
     // eslint-disable-next-line
@@ -112,7 +116,7 @@ export const TaskViewSwitcher = ({
       localStorage.setItem('MyTaskView', view);
       localStorage.setItem('WorkspaceId', workspaceId);
     } else if (pathnameKey === 'projects' && view) {
-      localStorage.setItem('ProjectTaskView', view);
+      localStorage.setItem(paramProjectId, view);
     }
     // eslint-disable-next-line
   }, [view]);
