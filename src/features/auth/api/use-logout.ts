@@ -27,6 +27,7 @@ export const useLogout = () => {
       // クライアント側でログアウト処理
       toast.success('Logged out');
       router.refresh();
+      localStorage.clear();
       // queryClient.invalidateQueries({ queryKey: ['current'] });
       // queryClient.invalidateQueries({ queryKey: ['workspaces'] });
     },

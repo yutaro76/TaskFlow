@@ -7,16 +7,14 @@ export const useCurrent = () => {
     queryKey: ['current'],
     queryFn: async () => {
       const response = await client.api.auth.current.$get();
-
       if (!response.ok) {
         return null;
       }
-
       const { data } = await response.json();
 
       return data;
     },
   });
-  // queryはuseQueryで取得したデータを返し、queryKeyも返す。
+
   return query;
 };

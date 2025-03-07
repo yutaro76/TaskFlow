@@ -10,3 +10,14 @@ export const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, 'Minimum 8 characters required'),
 });
+
+export const updateFaceSchema = z.object({
+  image: z
+    .union([
+      // fileインスタンスであることの確認
+      z.instanceof(File),
+      // 空文字の場合はundefinedに変換
+      z.string().transform((value) => (value === '' ? undefined : value)),
+    ])
+    .optional(),
+});

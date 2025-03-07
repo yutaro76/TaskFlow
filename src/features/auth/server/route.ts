@@ -1,11 +1,19 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { loginSchema, registerSchema } from '../schemas';
+import { loginSchema, registerSchema, updateFaceSchema } from '../schemas';
 import { createAdminClient } from '@/lib/appwrite';
 import { ID } from 'node-appwrite';
 import { deleteCookie, setCookie } from 'hono/cookie';
 import { AUTH_COOKIE } from '../constants';
 import { sessionMiddleware } from '@/lib/session-middleware';
+import {
+  APIKEY,
+  ENDPOINT,
+  FACE_IMAGES_BUCKET_ID,
+  PROJECT,
+} from '../../../../config';
+
+import { Client, Storage } from 'appwrite';
 
 const app = new Hono()
   .get('/current', sessionMiddleware, (c) => {
@@ -70,6 +78,73 @@ const app = new Hono()
     // サーバー側でログアウト処理
     await account.deleteSession('current');
     return c.json({ success: true });
-  });
+  })
+  .patch(
+    '/face',
+    sessionMiddleware,
+    zValidator('form', updateFaceSchema),
+    // Honoでcが使えるようになる。
+    async (c) => {
+      // Appwrite のストレージサービスを取得するためのコード
+      const storage = c.get('storage');
+      const user = c.get('user');
 
+      const { image } = c.req.valid('form');
+
+      let uploadedImageUrl: string | undefined;
+
+      // eslint-disable-next-line
+      const sdk = require('node-appwrite');
+
+      const client = new sdk.Client()
+        .setEndpoint(ENDPOINT)
+        .setProject(PROJECT)
+        .setKey(APIKEY);
+
+      const users = new sdk.Users(client);
+
+      if (image instanceof File) {
+        // createFileはAppwriteのStorageクラスから提供されるメソッド
+        const file = await storage.createFile(
+          FACE_IMAGES_BUCKET_ID,
+          ID.unique(),
+          image
+        );
+
+        // getFilePreviewはAppwriteのStorageクラスから提供されるメソッド
+        // arrayBufferには画像のバイナリデータが入る。バイナリデータとは、画像や音声、動画などのデータを表すためのデータ形式。
+        const arrayBuffer = await storage.getFilePreview(
+          FACE_IMAGES_BUCKET_ID,
+          // file.$id はアップロードされた画像のID
+          file.$id
+        );
+
+        // Bufferはバイナリデータを扱うためのNode.jsの標準ライブラリで提供されるグローバルオブジェクト
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
+          arrayBuffer
+        ).toString('base64')}`;
+
+        await users.updatePrefs(user.$id, {
+          icon: file.$id,
+        });
+      } else {
+        uploadedImageUrl = image;
+      }
+
+      return c.json({
+        success: true,
+        data: { image: uploadedImageUrl },
+      });
+    }
+  )
+  .get('/:userIconId', sessionMiddleware, async (c) => {
+    const { userIconId } = c.req.param();
+
+    const client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT);
+
+    const storage = new Storage(client);
+
+    const result = await storage.getFile(FACE_IMAGES_BUCKET_ID, userIconId);
+    return c.json({ data: result });
+  });
 export default app;

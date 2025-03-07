@@ -9,16 +9,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DottedSeparator } from '@/components/dotted-separator';
 import { Button } from '@/components/ui/button';
 import { useCreateFaceModal } from '@/features/members/hooks/use-create-face-modal';
+import { IconAvatar } from './icon-avatar';
+import { IconImage } from './icon-image';
 
 export const UserButton = () => {
   const { open } = useCreateFaceModal();
-  const { data: user, isLoading } = useCurrent();
-  // useLogout内の処理をまとめてmutateと名前をつけて、ここではlogout()として使えるようにする
   const { mutate: logout } = useLogout();
+
+  const { data: user, isLoading } = useCurrent();
+
+  // もしユーザーが存在しなければ、ボタンを押しても何も起こらない
+  if (!user) {
+    return null;
+  }
 
   // ユーザーが取得中の場合はローディングアイコンを表示
   if (isLoading) {
@@ -29,31 +35,26 @@ export const UserButton = () => {
     );
   }
 
-  // もしユーザーが存在しなければ、ボタンを押しても何も起こらない
-  if (!user) {
-    return null;
-  }
-
-  const { email, name } = user;
-
   // アバターの文字表示のために使われる
   // nameがあればnameの最初の文字を大文字にして、なければemailの最初の文字を大文字にする。
   // どちらもなければUを表示する。
+  const { email, name } = user;
   const avatarFallback = name
     ? name.charAt(0).toUpperCase()
     : email.charAt(0).toUpperCase() ?? 'U';
 
   const userEmailFirst = user.email.split('@')[0];
 
+  const userIconId = user?.prefs?.icon;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className='outline-none relative'>
-        <Avatar className='size-10 hover:opacity-75 transition border border-neutral-300'>
-          {/* 最初に表示される一文字の部分の設定 */}
-          <AvatarFallback className='bg-neutral-200 font-medium text-neutral-500 flex items-center justify-center'>
-            {avatarFallback}
-          </AvatarFallback>
-        </Avatar>
+        {userIconId ? (
+          <IconImage userIconId={userIconId} />
+        ) : (
+          <IconAvatar avatarFallback={avatarFallback} />
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align='end'
@@ -64,11 +65,11 @@ export const UserButton = () => {
       >
         <div className='flex flex-col items-center justify-center gap-2 px-2.5 py-4'>
           {/* 丸文字 */}
-          <Avatar className='size-[52px] border border-neutral-300'>
-            <AvatarFallback className='bg-neutral-200 text-xl font-medium text-neutral-500 flex items-center justify-center'>
-              {avatarFallback}
-            </AvatarFallback>
-          </Avatar>
+          {userIconId ? (
+            <IconImage userIconId={userIconId} />
+          ) : (
+            <IconAvatar avatarFallback={avatarFallback} />
+          )}
           {/* 名前とメール */}
           <div className='flex flex-col items-center justify-center'>
             <p className='text-sm font-medium text-neutral-900'>
