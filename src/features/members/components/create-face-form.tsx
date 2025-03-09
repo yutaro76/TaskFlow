@@ -11,42 +11,52 @@ import {
   FormLabel,
 } from '../../../components/ui/form';
 import { Button } from '../../../components/ui/button';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useUpdateFace } from '@/features/auth/api/use-update-face';
 import { updateFaceSchema } from '@/features/auth/schemas';
+import { Client, Storage } from 'appwrite';
+import { ENDPOINT, FACE_IMAGES_BUCKET_ID, PROJECT } from '../../../../config';
+import { useCurrent } from '@/features/auth/api/use-current';
 
 interface CreateFaceFormProps {
   onCancel?: () => void;
 }
 
 export const CreateFaceForm = ({ onCancel }: CreateFaceFormProps) => {
+  const [isEdited, setIsEdited] = useState(false);
+
   const { mutate, isPending } = useUpdateFace();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // ユーザーのアイコンを取得
-  // const { data: user, isLoading } = useCurrent();
-  // const userIconId = user?.prefs?.icon;
-  // const client = new Client();
-  // const storage = new Storage(client);
+  // storageからimageを取得する
+  const { data: user } = useCurrent();
+  const userIconId = user?.prefs?.icon;
 
-  // client.setEndpoint('https://cloud.appwrite.io/v1').setProject(PROJECT);
-  // const result = user?.prefs?.icon
-  //   ? storage.getFilePreview(FACE_IMAGES_BUCKET_ID, user.prefs.icon)
-  //   : null;
+  const client = new Client();
+  client.setEndpoint(ENDPOINT).setProject(PROJECT);
+  const storage = new Storage(client);
+
+  // storageからimageのURLを取得する
+
+  let imageUrl: string | undefined;
+  // eslint-disable-next-line
+  userIconId
+    ? (imageUrl = storage.getFilePreview(FACE_IMAGES_BUCKET_ID, userIconId))
+    : (imageUrl = '');
 
   const form = useForm<z.infer<typeof updateFaceSchema>>({
     resolver: zodResolver(updateFaceSchema),
     defaultValues: {
-      image: '',
+      image: imageUrl ? imageUrl : undefined,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof updateFaceSchema>) => {
+  const onSubmit = (values: z.infer<typeof updateFaceSchema>) => {
     const finalValues = {
       ...values,
       image: values.image instanceof File ? values.image : '',
@@ -69,6 +79,7 @@ export const CreateFaceForm = ({ onCancel }: CreateFaceFormProps) => {
     const file = e.target.files?.[0];
     if (file) {
       form.setValue('image', file);
+      setIsEdited(true);
     }
   };
 
@@ -97,7 +108,7 @@ export const CreateFaceForm = ({ onCancel }: CreateFaceFormProps) => {
                               src={
                                 field.value instanceof File
                                   ? URL.createObjectURL(field.value)
-                                  : field.value
+                                  : imageUrl
                               }
                             />
                           </div>
@@ -128,6 +139,7 @@ export const CreateFaceForm = ({ onCancel }: CreateFaceFormProps) => {
                               size='xs'
                               className='w-fit mt-2'
                               onClick={() => {
+                                setIsEdited(true);
                                 field.onChange(null);
                                 if (inputRef.current) {
                                   inputRef.current.value = '';
@@ -143,7 +155,11 @@ export const CreateFaceForm = ({ onCancel }: CreateFaceFormProps) => {
                               variant='tertiary'
                               size='xs'
                               className='w-fit mt-2'
-                              onClick={() => inputRef.current?.click()}
+                              // クリックで<input>と紐づき、画像を選択できる。
+                              // 本来はinputの欄があるが、それをボタンで隠している。
+                              onClick={() => {
+                                inputRef.current?.click();
+                              }}
                             >
                               Upload Image
                             </Button>
@@ -166,7 +182,11 @@ export const CreateFaceForm = ({ onCancel }: CreateFaceFormProps) => {
                 >
                   Cancel
                 </Button>
-                <Button type='submit' size='lg' disabled={isPending}>
+                <Button
+                  type='submit'
+                  size='lg'
+                  disabled={isPending || !isEdited}
+                >
                   Save Changes
                 </Button>
               </div>

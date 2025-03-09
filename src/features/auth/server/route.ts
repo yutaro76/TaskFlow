@@ -91,7 +91,7 @@ const app = new Hono()
 
       const { image } = c.req.valid('form');
 
-      let uploadedImageUrl: string | undefined;
+      let uploadedImageUrl: string | undefined | null;
 
       // eslint-disable-next-line
       const sdk = require('node-appwrite');
@@ -129,6 +129,9 @@ const app = new Hono()
         });
       } else {
         uploadedImageUrl = image;
+        await users.updatePrefs(user.$id, {
+          icon: null,
+        });
       }
 
       return c.json({

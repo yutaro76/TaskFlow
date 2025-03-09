@@ -17,7 +17,10 @@ export const updateFaceSchema = z.object({
       // fileインスタンスであることの確認
       z.instanceof(File),
       // 空文字の場合はundefinedに変換
-      z.string().transform((value) => (value === '' ? undefined : value)),
+      z
+        .string()
+        .nullable()
+        .transform((value) => (value === '' ? undefined : value)),
     ])
     .optional(),
 });
