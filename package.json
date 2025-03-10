@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "i18nexus pull & next dev",
+    "build": "i18nexus pull & next build",
+    "start": "i18nexus pull & next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -32,8 +32,11 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "hono": "^4.6.3",
+    "i18next": "^24.2.2",
+    "i18next-resources-to-backend": "^1.2.1",
     "lucide-react": "^0.473.0",
     "next": "14.2.14",
+    "next-i18n-router": "^5.5.1",
     "next-themes": "^0.4.4",
     "node-appwrite": "^14.0.0",
     "nuqs": "^1.19.1",
@@ -43,6 +46,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
     "react-hook-form": "^7.54.2",
+    "react-i18next": "^15.4.1",
     "react-icons": "^5.4.0",
     "react-router-dom": "^7.2.0",
     "react-tooltip": "^5.28.0",
@@ -63,6 +67,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "i18nexus-cli": "^3.5.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"

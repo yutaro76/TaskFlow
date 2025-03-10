@@ -4,32 +4,35 @@ import { MobileSidebar } from './mobile-sidebar';
 import { usePathname } from 'next/navigation';
 import { CreateFaceModal } from '@/features/members/components/create-face-modal';
 
-const pathnameMap = {
-  tasks: {
-    title: 'My Tasks',
-    description: 'This is the list of my tasks.',
-  },
-  projects: {
-    title: 'My Project',
-    description: 'These are the details of this project.',
-  },
-  settings: {
-    title: 'My Settings',
-    description: 'These are the settings of this workspace.',
-  },
-  members: {
-    title: 'My Members',
-    description: 'This is the member list for this workspace.',
-  },
-};
-
-const defaultMap = {
-  title: 'Home',
-  description: 'This is the home of this workspace.',
-};
+import { useGetText } from './get-text';
 
 export const Navbar = () => {
   const pathname = usePathname();
+  const getText = useGetText();
+
+  const pathnameMap = {
+    tasks: {
+      title: 'My Tasks',
+      description: getText('tasks_description'),
+    },
+    projects: {
+      title: 'My Project',
+      description: 'These are the details of this project.',
+    },
+    settings: {
+      title: 'My Settings',
+      description: 'These are the settings of this workspace.',
+    },
+    members: {
+      title: 'My Members',
+      description: 'This is the member list for this workspace.',
+    },
+  };
+
+  const defaultMap = {
+    title: 'Home',
+    description: 'This is the home of this workspace.',
+  };
   // workspace/123/tasks/123/...
   // workspace/123/projects/123/...
   const pathnameParts = pathname.split('/');

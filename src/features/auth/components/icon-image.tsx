@@ -1,5 +1,5 @@
 import { Client, Storage } from 'appwrite';
-import { FACE_IMAGES_BUCKET_ID, PROJECT } from '../../../../config';
+import { ENDPOINT, FACE_IMAGES_BUCKET_ID, PROJECT } from '../../../../config';
 
 interface IconImageProps {
   userIconId: string;
@@ -7,7 +7,7 @@ interface IconImageProps {
 const client = new Client();
 const storage = new Storage(client);
 
-client.setEndpoint('https://cloud.appwrite.io/v1').setProject(PROJECT);
+client.setEndpoint(ENDPOINT).setProject(PROJECT);
 
 export const IconImage = ({ userIconId }: IconImageProps) => {
   const result = storage.getFilePreview(FACE_IMAGES_BUCKET_ID, userIconId);
