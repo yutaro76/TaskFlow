@@ -21,6 +21,16 @@ export const UserButton = () => {
 
   const { data: user, isLoading } = useCurrent();
 
+  // const currentPath = usePathname();
+  // const defaultLanguageSetting = localStorage.getItem('language') || 'en';
+
+  // const [languageSetting, setLanguageSetting] = useState(
+  //   defaultLanguageSetting
+  // );
+
+  // const ChangeLanguage = (event: React.ChangeEvent<HTMLInputElement>) =>
+  //   setLanguageSetting(event.target.value);
+
   // もしユーザーが存在しなければ、ボタンを押しても何も起こらない
   if (!user) {
     return null;
@@ -51,7 +61,7 @@ export const UserButton = () => {
     <DropdownMenu>
       <DropdownMenuTrigger className='outline-none relative'>
         {userIconId ? (
-          <IconImage userIconId={userIconId} />
+          <IconImage />
         ) : (
           <IconAvatar avatarFallback={avatarFallback} />
         )}
@@ -66,7 +76,7 @@ export const UserButton = () => {
         <div className='flex flex-col items-center justify-center gap-2 px-2.5 py-4'>
           {/* 丸文字 */}
           {userIconId ? (
-            <IconImage userIconId={userIconId} />
+            <IconImage />
           ) : (
             <IconAvatar avatarFallback={avatarFallback} />
           )}
@@ -78,6 +88,35 @@ export const UserButton = () => {
             <p className='text-xs text-neutral-500'>{email}</p>
           </div>
         </div>
+        {/* 言語選択のラジオボタン */}
+        {/* <div className='flex place-content-center pb-4'>
+          <div>
+          <input
+          id='en'
+          type='radio'
+          name='en_button'
+          value='en'
+          checked={languageSetting !== 'ja'}
+          onChange={ChangeLanguage}
+          />
+          <label htmlFor='#en' className='form-check-label'>
+          &nbsp;EN
+          </label>
+          </div>
+          <div className='ml-4'>
+          <input
+          id='ja'
+          type='radio'
+          name='ja_button'
+          value='ja'
+          checked={languageSetting === 'ja'}
+          onChange={ChangeLanguage}
+          />
+          <label htmlFor='#ja' className='form-check-label'>
+          &nbsp;JA
+          </label>
+          </div>
+          </div> */}
         {/* アイコン変更用のボタン */}
         <div className='flex flex-col items-center justify-center mb-4'>
           <Button

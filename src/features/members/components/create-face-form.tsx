@@ -28,9 +28,7 @@ interface CreateFaceFormProps {
 
 export const CreateFaceForm = ({ onCancel }: CreateFaceFormProps) => {
   const [isEdited, setIsEdited] = useState(false);
-
   const { mutate, isPending } = useUpdateFace();
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   // storageからimageを取得する
@@ -67,9 +65,6 @@ export const CreateFaceForm = ({ onCancel }: CreateFaceFormProps) => {
         onSuccess: () => {
           form.reset();
           onCancel?.();
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
         },
       }
     );

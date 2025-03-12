@@ -10,7 +10,7 @@ export const useGetFaceIcon = ({ userIconId }: UseGetFaceIconProps) => {
     // queryKeyはクエリのキーを指定するためのプロパティ。
     queryKey: ['userIconId', userIconId],
     queryFn: async () => {
-      const response = await client.api.auth[':userIconId'].$get({
+      const response = await client.api.auth[':userIconId']['$get']({
         param: { userIconId },
       });
 
@@ -24,5 +24,5 @@ export const useGetFaceIcon = ({ userIconId }: UseGetFaceIconProps) => {
     },
   });
 
-  return query;
+  return query.data;
 };

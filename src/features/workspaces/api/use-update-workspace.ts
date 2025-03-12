@@ -13,7 +13,6 @@ type RequestType = InferRequestType<
 >;
 
 export const useUpdateWorkspace = () => {
-
   const queryClient = useQueryClient();
   // useMutation<ResponseType, Error, RequestType>は非同期操作を管理するための Reactフック。
   const mutation = useMutation<ResponseType, Error, RequestType>({

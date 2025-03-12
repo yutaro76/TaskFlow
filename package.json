@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "i18nexus pull & next dev",
-    "build": "i18nexus pull & next build",
-    "start": "i18nexus pull & next start",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "@radix-ui/react-tabs": "^1.1.2",
     "@radix-ui/react-visually-hidden": "^1.1.1",
     "@tanstack/react-query": "^5.59.0",
+    "@tanstack/react-query-devtools": "^5.67.3",
     "@tanstack/react-table": "^8.20.5",
     "appwrite": "^17.0.0",
     "class-variance-authority": "^0.7.1",

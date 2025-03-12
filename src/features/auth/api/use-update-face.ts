@@ -1,5 +1,5 @@
 import { client } from '@/lib/rpc';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { InferRequestType, InferResponseType } from 'hono';
 import { toast } from 'sonner';
 
@@ -8,8 +8,8 @@ type ResponseType = InferResponseType<
   200
 >;
 type RequestType = InferRequestType<(typeof client.api.auth)['face']['$patch']>;
-
 export const useUpdateFace = () => {
+  const queryClient = useQueryClient();
   // useMutation<ResponseType, Error, RequestType>は非同期操作を管理するための Reactフック。
   const mutation = useMutation<ResponseType, Error, RequestType>({
     // mutationFnはuseMutationと一緒に使われる。
@@ -28,6 +28,7 @@ export const useUpdateFace = () => {
     },
     onSuccess: async () => {
       toast.success('Icon updated');
+      queryClient.invalidateQueries({ queryKey: ['current'] });
     },
     onError: () => {
       toast.error('Failed to update icon');
